@@ -258,7 +258,7 @@ const App = () => {
             { name: 'Unity', url: '/unity.svg' }, // Public folder mein unity.svg hona chahiye
             { name: 'Blender', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg' },
             { name: 'Photoshop', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg' },
-            { name: 'Krita', url: '/krita.png' }, // Public folder mein krita.png hona chahiye
+            { name: 'Krita', url: '/krita.svg' }, // Public folder mein krita.png hona chahiye
             { name: 'VSCode', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg' },
             { name: 'GitHub', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg' }
           ].map((tool, i) => (
