@@ -52,13 +52,14 @@ const ProjectData = {
   ]
 };
 
+// Fixed Logo Links
 const tools = [
-  { name: 'Unity', url: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Unity_2021_Logo.svg' },
-  { name: 'Blender', url: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/Blender_logo_no_text.svg' },
-  { name: 'Photoshop', url: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg' },
-  { name: 'Krita', url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Krita-Project_Logo.svg/512px-Krita-Project_Logo.svg.png' },
-  { name: 'VSCode', url: 'https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg' },
-  { name: 'GitHub', url: 'https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg' }
+  { name: 'Unity', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unity/unity-original.svg' },
+  { name: 'Blender', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg' },
+  { name: 'Photoshop', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg' },
+  { name: 'VSCode', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg' },
+  { name: 'GitHub', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg' },
+  { name: 'Krita', url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Krita-Project_Logo.svg/512px-Krita-Project_Logo.svg.png' }
 ];
 
 const App = () => {
@@ -66,12 +67,38 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [previewItem, setPreviewItem] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(0);
+  const [loadStatus, setLoadStatus] = useState('CONNECTING TO SERVER...');
 
+  // Realistic Loader Logic
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2800);
-    return () => clearTimeout(timer);
+    let progress = 0;
+    const statuses = [
+      'BYPASSING SECURITY PROTOCOLS...',
+      'DOWNLOADING 3D ASSETS...',
+      'INITIALIZING TENGEN ENGINE...',
+      'DECRYPTING USER DATA...',
+      'ACCESS GRANTED_'
+    ];
+    
+    const interval = setInterval(() => {
+      progress += Math.floor(Math.random() * 15) + 5;
+      
+      if (progress >= 20 && progress < 40) setLoadStatus(statuses[0]);
+      else if (progress >= 40 && progress < 60) setLoadStatus(statuses[1]);
+      else if (progress >= 60 && progress < 80) setLoadStatus(statuses[2]);
+      else if (progress >= 80 && progress < 99) setLoadStatus(statuses[3]);
+
+      if (progress >= 100) {
+        progress = 100;
+        setLoadStatus(statuses[4]);
+        clearInterval(interval);
+        setTimeout(() => setIsLoading(false), 800);
+      }
+      setLoadProgress(progress);
+    }, 350);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -94,12 +121,13 @@ const App = () => {
     return (
       <div className="hacker-loader">
         <div className="matrix-code">
-          <p className="matrix-line" style={{animationDelay: '0.2s'}}>&gt; CONNECTING TO SERVER...</p>
-          <p className="matrix-line" style={{animationDelay: '0.6s'}}>&gt; BYPASSING SECURITY PROTOCOLS...</p>
-          <p className="matrix-line" style={{animationDelay: '1.0s'}}>&gt; DOWNLOADING 3D ASSETS...</p>
-          <p className="matrix-line" style={{animationDelay: '1.4s'}}>&gt; INITIALIZING TENGEN ENGINE...</p>
-          <p className="matrix-line" style={{animationDelay: '1.8s'}}>&gt; DECRYPTING USER DATA...</p>
-          <p className="matrix-line" style={{animationDelay: '2.2s', color: '#fff'}}>&gt; ACCESS GRANTED <span className="blink-cursor">_</span></p>
+          <h1 className="loader-title orbitron">SYSTEM BOOT</h1>
+          <div className="progress-bar-container">
+            <div className="progress-bar" style={{ width: `${loadProgress}%` }}></div>
+          </div>
+          <p className="matrix-line" style={{ color: loadProgress === 100 ? '#fff' : '#888' }}>
+            &gt; {loadStatus} {loadProgress}%
+          </p>
         </div>
       </div>
     );
@@ -176,8 +204,7 @@ const App = () => {
       <NavBar />
       <header className="hero-split animate-fade-in">
         <div className="hero-img-box">
-          {/* Logo updated to use cj.svg from public folder */}
-          <img src="/Data/CJ.png" alt="Chetan" className="about-main-img" />
+          <img src="/cj.svg" alt="Chetan" className="hero-main-img" />
         </div>
         <div className="hero-text-box">
           <h1 className="hero-name">CHETAN JOSHI</h1>
@@ -270,4 +297,5 @@ const App = () => {
   );
 };
 
+export default App;
 export default App;
