@@ -200,7 +200,7 @@ const App = () => {
       <NavBar />
       <header className="hero-split animate-fade-in">
         <div className="hero-img-box">
-          <img src="/cj.svg" alt="Chetan" className="hero-main-img" />
+          <img src="/Data/CJ.png" alt="Chetan" className="about-main-img" />
         </div>
         <div className="hero-text-box">
           <h1 className="hero-name">CHETAN JOSHI</h1>
