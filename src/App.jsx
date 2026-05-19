@@ -52,51 +52,46 @@ const ProjectData = {
   ]
 };
 
-// Fixed Logo Links
-const tools = [
-  { name: 'Unity', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unity/unity-original.svg' },
-  { name: 'Blender', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg' },
-  { name: 'Photoshop', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg' },
-  { name: 'VSCode', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg' },
-  { name: 'GitHub', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg' },
-  { name: 'Krita', url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Krita-Project_Logo.svg/512px-Krita-Project_Logo.svg.png' }
-];
-
 const App = () => {
   const [activeTab, setActiveTab] = useState(null);
   const [currentPage, setCurrentPage] = useState('home');
   const [previewItem, setPreviewItem] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadProgress, setLoadProgress] = useState(0);
-  const [loadStatus, setLoadStatus] = useState('CONNECTING TO SERVER...');
+  const [loadStatus, setLoadStatus] = useState('ESTABLISHING SECURE CONNECTION...');
 
-  // Realistic Loader Logic
+  // Realistic Loader Logic - Added more steps for realistic feel
   useEffect(() => {
     let progress = 0;
     const statuses = [
+      'ESTABLISHING SECURE CONNECTION...',
       'BYPASSING SECURITY PROTOCOLS...',
-      'DOWNLOADING 3D ASSETS...',
+      'FETCHING 3D ASSETS & TEXTURES...',
+      'MOUNTING VIRTUAL ENVIRONMENT...',
       'INITIALIZING TENGEN ENGINE...',
+      'COMPILING SHADERS...',
       'DECRYPTING USER DATA...',
       'ACCESS GRANTED_'
     ];
     
     const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 15) + 5;
+      progress += Math.floor(Math.random() * 12) + 2;
       
-      if (progress >= 20 && progress < 40) setLoadStatus(statuses[0]);
-      else if (progress >= 40 && progress < 60) setLoadStatus(statuses[1]);
-      else if (progress >= 60 && progress < 80) setLoadStatus(statuses[2]);
-      else if (progress >= 80 && progress < 99) setLoadStatus(statuses[3]);
+      if (progress >= 10 && progress < 20) setLoadStatus(statuses[1]);
+      else if (progress >= 20 && progress < 35) setLoadStatus(statuses[2]);
+      else if (progress >= 35 && progress < 50) setLoadStatus(statuses[3]);
+      else if (progress >= 50 && progress < 65) setLoadStatus(statuses[4]);
+      else if (progress >= 65 && progress < 80) setLoadStatus(statuses[5]);
+      else if (progress >= 80 && progress < 95) setLoadStatus(statuses[6]);
 
       if (progress >= 100) {
         progress = 100;
-        setLoadStatus(statuses[4]);
+        setLoadStatus(statuses[7]);
         clearInterval(interval);
-        setTimeout(() => setIsLoading(false), 800);
+        setTimeout(() => setIsLoading(false), 900); // 0.9s pause on 100%
       }
-      setLoadProgress(progress);
-    }, 350);
+      setLoadProgress(progress > 100 ? 100 : progress);
+    }, 280);
 
     return () => clearInterval(interval);
   }, []);
@@ -117,16 +112,17 @@ const App = () => {
     }, 100);
   };
 
+  // Upgraded Loader JSX - Centered and scaled up
   if (isLoading) {
     return (
-      <div className="hacker-loader">
-        <div className="matrix-code">
-          <h1 className="loader-title orbitron">SYSTEM BOOT</h1>
-          <div className="progress-bar-container">
-            <div className="progress-bar" style={{ width: `${loadProgress}%` }}></div>
+      <div className="hacker-loader" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', width: '100vw', backgroundColor: '#050505' }}>
+        <div className="matrix-code" style={{ transform: 'scale(1.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '80%', maxWidth: '600px' }}>
+          <h1 className="loader-title orbitron" style={{ fontSize: '2rem', marginBottom: '20px', letterSpacing: '4px' }}>SYSTEM BOOT</h1>
+          <div className="progress-bar-container" style={{ width: '100%', height: '8px', backgroundColor: '#222', marginBottom: '20px', overflow: 'hidden' }}>
+            <div className="progress-bar" style={{ width: `${loadProgress}%`, height: '100%', backgroundColor: '#fff', transition: 'width 0.3s ease-out' }}></div>
           </div>
-          <p className="matrix-line" style={{ color: loadProgress === 100 ? '#fff' : '#888' }}>
-            &gt; {loadStatus} {loadProgress}%
+          <p className="matrix-line" style={{ color: loadProgress === 100 ? '#fff' : '#aaa', fontSize: '1rem', letterSpacing: '1px', textAlign: 'center' }}>
+            &gt; {loadStatus} [{loadProgress}%]
           </p>
         </div>
       </div>
@@ -250,15 +246,14 @@ const App = () => {
         ))}
       </section>
 
-
-<footer className="footer-stack">
+      <footer className="footer-stack">
         <h3 className="orbitron stack-label">TOOLS & CORE VALUES</h3>
         <div className="icon-grid">
           {[
-            { name: 'Unity', url: '/unity.svg' }, // Public folder mein unity.svg hona chahiye
+            { name: 'Unity', url: '/unity.svg' },
             { name: 'Blender', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg' },
             { name: 'Photoshop', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg' },
-            { name: 'Krita', url: '/krita.svg' }, // Public folder mein krita.png hona chahiye
+            { name: 'Krita', url: '/krita.svg' }, 
             { name: 'VSCode', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg' },
             { name: 'GitHub', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg' }
           ].map((tool, i) => (
@@ -267,7 +262,8 @@ const App = () => {
               <span className="orbitron tool-name">{tool.name}</span>
             </div>
           ))}
-      
+        </div> {/* <-- YE DIV MISSING THA, AB FIX HAI! --> */}
+
         <div className="footer-contact mt-80">
           <h2 className="hero-name small-name">LET'S BUILD SOMETHING.</h2>
           <div className="contact-details mt-40">
