@@ -250,16 +250,24 @@ const App = () => {
         ))}
       </section>
 
-      <footer className="footer-stack">
+
+<footer className="footer-stack">
         <h3 className="orbitron stack-label">TOOLS & CORE VALUES</h3>
         <div className="icon-grid">
-          {tools.map((tool, i) => (
+          {[
+            { name: 'Unity', url: '/unity.svg' }, // Public folder mein unity.svg hona chahiye
+            { name: 'Blender', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg' },
+            { name: 'Photoshop', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg' },
+            { name: 'Krita', url: '/krita.png' }, // Public folder mein krita.png hona chahiye
+            { name: 'VSCode', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg' },
+            { name: 'GitHub', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg' }
+          ].map((tool, i) => (
             <div key={i} className="icon-unit">
               <img src={tool.url} alt={tool.name} className="svg-tool" />
               <span className="orbitron tool-name">{tool.name}</span>
             </div>
           ))}
-        </div>
+      
         <div className="footer-contact mt-80">
           <h2 className="hero-name small-name">LET'S BUILD SOMETHING.</h2>
           <div className="contact-details mt-40">
@@ -297,5 +305,4 @@ const App = () => {
   );
 };
 
-export default App;
 export default App;
