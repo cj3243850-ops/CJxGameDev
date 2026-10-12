@@ -686,3 +686,105 @@
   background: #8a1df4;
   box-shadow: 0 0 25px rgba(138, 29, 244, 0.4);
 }
+/* Scroll Down to Explore 5 Models Indicator */
+.pd-models-scroll-indicator-box {
+  display: flex;
+  justify-content: center;
+  margin: -30px 0 45px 0;
+}
+
+.pd-models-scroll-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(90deg, #18151f 0%, #201a2d 100%);
+  border: 1px solid #f59e0b;
+  color: #fbbf24;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-family: 'Teko', sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+  transition: all 0.25s ease;
+  animation: pdPulseGlow 2.5s infinite ease-in-out;
+}
+
+@keyframes pdPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    transform: translateY(0);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.45);
+    transform: translateY(-3px);
+  }
+}
+
+.pd-models-scroll-pill-btn:hover {
+  background: #f59e0b;
+  color: #000000;
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.6);
+  transform: translateY(-2px);
+}
+
+.pd-indicator-pulse {
+  color: #f59e0b;
+  font-size: 1.1rem;
+}
+
+.pd-models-scroll-pill-btn:hover .pd-indicator-pulse {
+  color: #000000;
+}
+
+.pd-down-arrow {
+  font-size: 1.25rem;
+}
+
+/* 3D Models Card Headers */
+.pd-section-title-tag-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.pd-tag-pill-yellow {
+  display: inline-block;
+  align-self: flex-start;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid #f59e0b;
+  color: #fbbf24;
+  font-family: 'Teko', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 1.5px;
+  padding: 2px 10px;
+  border-radius: 4px;
+}
+
+.pd-models-lead-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin-bottom: 24px;
+}
+
+.pd-model-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.pd-model-number-tag {
+  background: #f59e0b;
+  color: #000000;
+  font-family: 'Teko', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  }
+  
