@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@600;700&display=swap');
+
+.splash-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #0d0f12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  opacity: 1;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: all;
+}
+
+.splash-overlay.fade-out {
+  opacity: 0;
+  transform: scale(1.02);
+  pointer-events: none;
+}
+
+.splash-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  user-select: none;
+}
+
+/* Splash Logo Clean & Crisp (No Heavy Blur) */
+.splash-logo {
+  width: 170px;
+  height: auto;
+  margin-bottom: 12px;
+}
+
+.splash-title-box {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  line-height: 0.92;
+}
+
+.splash-title-white {
+  font-family: 'Teko', sans-serif;
+  font-size: 4.5rem;
+  letter-spacing: 3.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.splash-title-accent {
+  font-family: 'Teko', sans-serif;
+  font-size: 4.5rem;
+  letter-spacing: 3.5px;
+  font-weight: 700;
+  color: #8a1df4;
+  margin-left: 5px;
+}
+
+.splash-subtitle {
+  font-family: 'Teko', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 6px;
+  color: #8b929e;
+  font-weight: 600;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+/* 3 Clean Equalizer Bars (No Neon Shadow) */
+.splash-loading-bars {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  height: 24px;
+}
+
+.splash-loading-bars .bar {
+  width: 6px;
+  height: 22px;
+  background-color: #8a1df4;
+  border-radius: 2px;
+  animation: barSmoothPulse 1s infinite ease-in-out;
+}
+
+.splash-loading-bars .bar-1 {
+  animation-delay: 0s;
+}
+
+.splash-loading-bars .bar-2 {
+  animation-delay: 0.18s;
+}
+
+.splash-loading-bars .bar-3 {
+  animation-delay: 0.36s;
+}
+
+@keyframes barSmoothPulse {
+  0%, 100% {
+    transform: scaleY(0.35);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scaleY(1.1);
+    opacity: 1;
+  }
+}
