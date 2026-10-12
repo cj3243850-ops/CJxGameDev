@@ -55,9 +55,16 @@ export default function ProjectDetail({ project, onClose, onNavigate }) {
     setCurrentSlide((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
   };
 
+  const scrollToModels = () => {
+    const el = document.getElementById('pd-models-breakdown');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="pd-page-view">
-      {/* 1. Sticky Header Bar */}
+      {/* 1. Header Bar */}
       <header className="pd-top-header">
         <div className="pd-nav-brand" onClick={onClose}>
           <img src="/Data/CJ_cPPP4.png" alt="CJ Logo" className="pd-brand-logo" />
@@ -88,7 +95,12 @@ export default function ProjectDetail({ project, onClose, onNavigate }) {
         </nav>
 
         <div className="pd-nav-actions">
-          <a href="mailto:cj3243850@gmail.com" className="pd-resume-pill">
+          <a
+            href="/Data/Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pd-resume-pill"
+          >
             MY RESUME 🗎
           </a>
           <a
@@ -115,12 +127,10 @@ export default function ProjectDetail({ project, onClose, onNavigate }) {
 
       {/* 2. Main Article View */}
       <main className="pd-main-article">
-        {/* Title */}
         <h1 className="pd-title-heading">
           {project.caseTitle || `${project.title.toUpperCase()} : CASE STUDY`}
         </h1>
 
-        {/* Lead Summary */}
         <div className="pd-lead-block">
           <p className="pd-lead-text">{project.summary}</p>
           {project.subtext && <p className="pd-lead-subtext">{project.subtext}</p>}
@@ -135,7 +145,7 @@ export default function ProjectDetail({ project, onClose, onNavigate }) {
             <div className="pd-studio-info">
               <h4 className="pd-studio-name">{project.studio.toUpperCase()}</h4>
               <p className="pd-studio-meta">
-                {project.duration || '2025 - 2026'} • {project.role.toUpperCase()}
+                {project.duration} • {project.role.toUpperCase()}
               </p>
             </div>
           </div>
@@ -160,9 +170,7 @@ export default function ProjectDetail({ project, onClose, onNavigate }) {
           </div>
         </div>
 
-        {/* =========================================================
-            PRIMARY SHOWCASE: VERTICAL TOP-TO-BOTTOM VIDEO FLOW
-            ========================================================= */}
+        {/* Video / Showcase Stage */}
         {project.videoPlaylist ? (
           <div className="pd-vertical-video-feed">
             <h2 className="pd-section-heading">GAMEPLAY MECHANICS CLIPS STREAM</h2>
@@ -207,6 +215,17 @@ export default function ProjectDetail({ project, onClose, onNavigate }) {
           </div>
         )}
 
+        {/* 3D Models ke liye Scroll Down Indicator Callout Button */}
+        {project.modelsList && (
+          <div className="pd-models-scroll-indicator-box">
+            <button className="pd-models-scroll-pill-btn" onClick={scrollToModels}>
+              <span className="pd-indicator-pulse">✦</span>
+              SCROLL DOWN TO EXPLORE ALL 5 INDIVIDUAL 3D MODELS
+              <span className="pd-down-arrow">🠓</span>
+            </button>
+          </div>
+        )}
+
         {/* Section 1 */}
         <section className="pd-content-section">
           <h2 className="pd-section-heading">
@@ -221,18 +240,28 @@ export default function ProjectDetail({ project, onClose, onNavigate }) {
           </ul>
         </section>
 
-        {/* 3D Models Breakdown */}
+        {/* 3D Models Breakdown (Targeted with ID for Smooth Scroll) */}
         {project.modelsList && (
-          <section className="pd-models-breakdown-section">
-            <h2 className="pd-section-heading">FEATURED ASSETS BREAKDOWN</h2>
+          <section id="pd-models-breakdown" className="pd-models-breakdown-section">
+            <div className="pd-section-title-tag-row">
+              <span className="pd-tag-pill-yellow">5 UNIQUE 3D MODELS</span>
+              <h2 className="pd-section-heading">FEATURED ASSETS BREAKDOWN</h2>
+            </div>
+            <p className="pd-models-lead-text">
+              Each model represents a distinct production workflow: SubD mechanical rigging, PBR hard-surface baking, product visual lookdev, and modular stylized game assets.
+            </p>
+
             <div className="pd-models-grid">
               {project.modelsList.map((m, idx) => (
                 <div key={idx} className="pd-model-card">
-                  <h3 className="pd-model-title">{m.name}</h3>
+                  <div className="pd-model-card-header">
+                    <span className="pd-model-number-tag">MODEL #{idx + 1}</span>
+                    <h3 className="pd-model-title">{m.name}</h3>
+                  </div>
                   <p className="pd-model-desc">{m.desc}</p>
                   <div className="pd-model-thumbs">
                     {m.video && (
-                      <video autoPlay loop muted className="pd-model-thumb-media">
+                      <video autoPlay loop muted playsInline className="pd-model-thumb-media">
                         <source src={m.video} type="video/mp4" />
                       </video>
                     )}
@@ -240,7 +269,7 @@ export default function ProjectDetail({ project, onClose, onNavigate }) {
                       <img
                         key={imgIdx}
                         src={imgSrc}
-                        alt={`${m.name} shot`}
+                        alt={`${m.name} screenshot ${imgIdx + 1}`}
                         className="pd-model-thumb-media"
                       />
                     ))}
