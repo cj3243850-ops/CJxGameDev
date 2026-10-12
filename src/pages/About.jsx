@@ -10,7 +10,7 @@ export default function About() {
           <span className="about-pill-tag">LEVEL DESIGNER & GAME DEVELOPER</span>
           <h1 className="about-main-title">CHETAN JOSHI (CJ)</h1>
           <p className="about-lead-intro">
-            Motivated 3D Artist and Level Designer with 2+ years of independent practice specializing in metric-accurate greybox blockouts, competitive sightlines, and responsive kinematic gameplay systems[cite: 26, 27].
+            Motivated 3D Artist and Level Designer with 2+ years of independent practice specializing in metric-accurate greybox blockouts, competitive sightlines, and responsive kinematic gameplay systems.
           </p>
         </div>
 
@@ -20,10 +20,10 @@ export default function About() {
           <div className="about-bio-col">
             <h2 className="about-section-h2">EXPERIENCE & LEVEL DESIGN PHILOSOPHY</h2>
             <p className="about-body-text">
-              Based in <strong>Udaipur, Rajasthan, India</strong>, pursuing B.Tech in CSE at Techno India NJR (RTU)[cite: 26, 27]. Over the past <strong>2+ years of independent development and team collaboration</strong>, my focus has been crafting gameplay spaces where spatial readability and encounter pacing dictate player decision making[cite: 27].
+              Based in <strong>Udaipur, Rajasthan, India</strong>, pursuing B.Tech in CSE at Techno India NJR (RTU). Over the past <strong>2+ years of independent development and team collaboration</strong>, my focus has been crafting gameplay spaces where spatial readability and encounter pacing dictate player decision making.
             </p>
             <p className="about-body-text">
-              Lead Developer at <strong>ThroneLeaf Games</strong>, directing <em>TenGen Parkour</em> while authoring modular blockouts and greybox pipelines across Unity and Unreal Engine[cite: 26].
+              Lead Developer at <strong>ThroneLeaf Games</strong>, directing <em>TenGen Parkour</em> while authoring modular blockouts and greybox pipelines across Unity and Unreal Engine.
             </p>
 
             <h2 className="about-section-h2" style={{ marginTop: '36px' }}>LEVEL DESIGN CASE HIGHLIGHTS</h2>
@@ -74,10 +74,10 @@ export default function About() {
             {/* Project 5: TenGen Parkour */}
             <div className="about-project-breakdown-card" style={{ marginTop: '16px' }}>
               <h3 className="about-card-h3">TenGen Parkour & Kinematic Mechanics</h3>
-              <p className="about-sub-details">Lead Developer • Shipped PC Beta (Itch.io)[cite: 26]</p>
+              <p className="about-sub-details">Lead Developer • Shipped PC Beta (Itch.io)</p>
               <ul className="about-points-list">
-                <li>Custom C# kinematic physics controller for wall-runs, slide-hops, and mantles without physics jitter[cite: 26].</li>
-                <li>Created 50+ custom 3D assets, modular urban obstacles, and 7 escalating obstacle gauntlets[cite: 26].</li>
+                <li>Custom C# kinematic physics controller for wall-runs, slide-hops, and mantles without physics jitter.</li>
+                <li>Created 50+ custom 3D assets, modular urban obstacles, and 7 escalating obstacle gauntlets.</li>
               </ul>
             </div>
           </div>
@@ -95,28 +95,28 @@ export default function About() {
 
               <div className="about-card-details">
                 <h3 className="about-card-name">CHETAN JOSHI (CJ)</h3>
-                <p className="about-card-sub">Level Designer | Indie Game Developer[cite: 26]</p>
+                <p className="about-card-sub">Level Designer | Indie Game Developer</p>
 
                 <div className="about-info-list">
                   <div className="info-item">
                     <span className="info-key">PRACTICE:</span>
-                    <span className="info-val">2+ Years (3D Assets & Game Dev)[cite: 27]</span>
+                    <span className="info-val">2+ Years (3D Assets & Game Dev)</span>
                   </div>
                   <div className="info-item">
                     <span className="info-key">LOCATION:</span>
-                    <span className="info-val">Udaipur, Rajasthan, India[cite: 26]</span>
+                    <span className="info-val">Udaipur, Rajasthan, India</span>
                   </div>
                   <div className="info-item">
                     <span className="info-key">EMAIL:</span>
-                    <span className="info-val">cj3243850@gmail.com[cite: 26]</span>
+                    <span className="info-val">cj3243850@gmail.com</span>
                   </div>
                   <div className="info-item">
                     <span className="info-key">EDUCATION:</span>
-                    <span className="info-val">B.Tech CSE, Techno India NJR (RTU)[cite: 27]</span>
+                    <span className="info-val">B.Tech CSE, Techno India NJR (RTU)</span>
                   </div>
                   <div className="info-item">
                     <span className="info-key">DEV OS SETUP:</span>
-                    <span className="info-val">Arch Linux, EndeavourOS, Nobara[cite: 26, 27]</span>
+                    <span className="info-val">Arch Linux, EndeavourOS, Nobara</span>
                   </div>
                 </div>
 
@@ -170,19 +170,19 @@ export default function About() {
             <div className="skill-cat-box">
               <h4 className="skill-cat-title">3D ART & PIPELINE</h4>
               <p className="skill-cat-items">
-                Blender (Low-poly, Hard-Surface SubD, Stylized Texturing, Character Setup, UV Atlasing, Weighted Normals)[cite: 26]
+                Blender (Low-poly, Hard-Surface SubD, Stylized Texturing, Character Setup, UV Atlasing, Weighted Normals)
               </p>
             </div>
             <div className="skill-cat-box">
               <h4 className="skill-cat-title">GAME ENGINES & CODE</h4>
               <p className="skill-cat-items">
-                Unity (3D/2D), C# Gameplay Scripting, Custom Kinematic Character Controllers, Godot, C, Python, HTML/CSS[cite: 26]
+                Unity (3D/2D), C# Gameplay Scripting, Custom Kinematic Character Controllers, Godot, C, Python, HTML/CSS
               </p>
             </div>
             <div className="skill-cat-box">
               <h4 className="skill-cat-title">OPTIMIZATION & SYSTEMS</h4>
               <p className="skill-cat-items">
-                Arch Linux & EndeavourOS high-performance render environments, Draw Call Optimization, Texture Packing, UI/UX Systems[cite: 26, 27]
+                Arch Linux & EndeavourOS high-performance render environments, Draw Call Optimization, Texture Packing, UI/UX Systems
               </p>
             </div>
           </div>
@@ -190,4 +190,5 @@ export default function About() {
       </div>
     </div>
   );
-}
+            }
+              
