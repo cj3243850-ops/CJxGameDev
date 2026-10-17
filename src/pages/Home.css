@@ -165,15 +165,26 @@
   color: #ffffff;
 }
 
+/* About Text Block Clean Typography */
 .about-text-block p {
+  font-family: 'Inter', sans-serif;
   font-size: 1.05rem;
-  line-height: 1.7;
-  color: #cbd5e1;
-  margin-bottom: 14px;
+  line-height: 1.85;
+  color: #94a3b8;
+  margin-bottom: 20px;
 }
 
+/* Purple link look hata kar natural bright white bold text */
 .about-text-block strong {
-  color: #8a1df4;
+  color: #f1f5f9;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Subtle soft accent (bina link jaisa lage) */
+.about-text-block em {
+  color: #e2e8f0;
+  font-style: italic;
 }
 
 /* SKILLS PILLS */

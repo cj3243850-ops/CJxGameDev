@@ -26,7 +26,7 @@ export const projectsData = [
       'Circular pillar rotunda serving as sequence focal anchor point.',
       'Claustrophobic corridor network calibrated for demonic chase speed and tight turn radii.',
       'Spatial routing aligned with the London Bridge music box audio trigger and fake staircase dead-end.',
-      'Ongoing level refinement and dynamic occlusion culling testing with DL-Core.'
+      'Dynamic occlusion culling and light bounce placement using low-poly greybox proxy meshes.'
     ],
     section2Title: 'ITERATION & TENSION BALANCING',
     section2Para: 'Playtests showed players escaped too easily; introduced a false double-back hallway and increased pillar density.'
@@ -248,7 +248,7 @@ export const projectsData = [
   },
 
   // ==========================================
-  // 4. 3D MODELS (5 DISCRETE HARD-SURFACE MODELS)
+  // 4. 3D MODELS (6 DISCRETE HARD-SURFACE MODELS)
   // ==========================================
   {
     id: '3d-models-collection',
@@ -264,7 +264,6 @@ export const projectsData = [
     thumbnail: '/Data/7.png',
     thumbStyle: { objectPosition: 'center center', transform: 'scale(1.0)' },
     videoFile: '/Data/11.mp4',
-    // 5 Discrete Models with Exact Descriptions
     modelsList: [
       {
         name: 'Model 01: Combat Robot Foot & Mechanical Leg Assembly',
@@ -291,20 +290,27 @@ export const projectsData = [
         name: 'Model 05: Hand-Painted & Textured Sci-Fi Storage Box',
         images: ['/Data/2.png', '/Data/3.png'],
         desc: 'Game-ready textured supply crate featuring painted graffiti aesthetics ("Help Me!"), edge wear weathering, and optimized low-poly budget.'
+      },
+      {
+        name: 'Model 06: Robotic Sci-Fi Hard-Surface Crate / Box',
+        images: ['/Data/800000.png', '/Data/800011.png', '/Data/800012.png'],
+        desc: 'Hard-surface robotic sci-fi storage box featuring mechanical locking latches, reinforced bevel chamfers, and SubD topology optimized for modular props.'
       }
     ],
     gallery: [
+      '/Data/800000.png', '/Data/800011.png', '/Data/800012.png',
       '/Data/7.png', '/Data/8.png', '/Data/9.png', '/Data/10.png',
       '/Data/69.png', '/Data/66.png', '/Data/64.png',
       '/Data/61.png', '/Data/56.png', '/Data/54.png'
     ],
     summary:
-      'A comprehensive collection of 5 distinct hard-surface assets created in Blender, encompassing mechanical robot joints, sci-fi ring spacecraft, product visualization studies, modular towers, and textured game props.',
+      'A comprehensive collection of 6 distinct hard-surface assets created in Blender, encompassing mechanical robot joints, sci-fi ring spacecraft, product visualization studies, modular towers, robotic storage crates, and painted game props.',
     subtext: 'Built utilizing MeshMachine, BoolTool, and weighted normal passes for clean real-time PBR shading.',
     section1Title: 'TOPOLOGY & BAKING PIPELINE',
     section1Para: 'Maintained strict quad-dominant flow during SubD phases, converting into clean triangulated low-poly game hulls without shading artifacts.',
     highlights: [
       'SubD high-poly modeling with procedural chamfers and bevel modifiers.',
+      'Robotic crate engineered with modular mechanical latches and handles.',
       'Weighted normal workflow eliminating the need for excessive supporting edge loops.',
       'Clean UV unwrapping with >85% packing efficiency and mirrored symmetry optimizations.',
       'Verified in Unity and Unreal Engine under varying dynamic lighting angles.'
@@ -361,8 +367,6 @@ export const skillsList = [
   'Unreal Engine Greyboxing',
   'Blender Hard-Surface 3D',
   'Gameplay Mechanics Programming',
-'Gameplay Mechanics Programming',
   'Game UI & HUD Systems',
   'Team Direction (ThroneLeaf Games)'
 ];
-  

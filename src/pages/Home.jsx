@@ -21,9 +21,7 @@ const MonitorIcon = () => (
 );
 
 export default function Home({ onSelectProject, onNavigate }) {
-  // Top 4 Level Design projects
   const topProjects = projectsData.slice(0, 4);
-  // Bottom 2 row
   const bottomProjects = projectsData.slice(4, 6);
 
   const renderCard = (proj) => (
@@ -40,7 +38,6 @@ export default function Home({ onSelectProject, onNavigate }) {
           style={proj.thumbStyle || {}}
         />
 
-        {/* Top Badges */}
         <div className="yp-top-badges">
           <span className="yp-badge-pill">{proj.badge}</span>
           <div className="yp-meta-capsules">
@@ -53,7 +50,6 @@ export default function Home({ onSelectProject, onNavigate }) {
           </div>
         </div>
 
-        {/* Hover Summary Overlay */}
         <div className="yp-hover-overlay">
           <div className="yp-hover-content">
             <div className="yp-hover-tags">
@@ -65,7 +61,6 @@ export default function Home({ onSelectProject, onNavigate }) {
           </div>
         </div>
 
-        {/* Flush Frosted Glass Bar */}
         <div className="yp-glass-footer">
           <div className="yp-glass-avatar">
             <img
@@ -87,12 +82,12 @@ export default function Home({ onSelectProject, onNavigate }) {
 
   return (
     <div className="home-page">
-      {/* Cinematic Ayanokoji Backdrop */}
+      {/* Background Graphic */}
       <div className="home-cinematic-backdrop">
         <div className="backdrop-overlay-gradient"></div>
       </div>
 
-      {/* 100vh Hero Screen */}
+      {/* Hero Section */}
       <section id="hero" className="hero-screen">
         <div className="hero-center-box">
           <img
@@ -127,7 +122,7 @@ export default function Home({ onSelectProject, onNavigate }) {
         </button>
       </section>
 
-      {/* Content Container */}
+      {/* Main Content */}
       <div className="home-content-container">
         {/* Section 01: About */}
         <section id="about-preview" className="home-section">
@@ -137,10 +132,10 @@ export default function Home({ onSelectProject, onNavigate }) {
           </div>
           <div className="about-text-block">
             <p>
-              I'm <strong>Chetan Joshi (CJ)</strong>, a dedicated <strong>Level Designer</strong> and 3D Game Developer with <strong>2+ years of independent practice</strong> specializing in <strong>competitive arenas, psychological horror labyrinths, and high-velocity traversal layouts</strong>[cite: 26, 27]. Lead Developer at ThroneLeaf Games, authoring kinematic movement physics and metric-tight blockouts in <em>TenGen Parkour</em>[cite: 26].
+              I'm <strong>Chetan Joshi (CJ)</strong>, a dedicated <strong>Level Designer</strong> and 3D Game Developer with <strong>2+ years of independent practice</strong> specializing in <strong>competitive arenas, psychological horror labyrinths, and high-velocity traversal layouts</strong>. Lead Developer at ThroneLeaf Games, authoring kinematic movement physics and metric-tight blockouts in <em>TenGen Parkour</em>.
             </p>
             <p>
-              Actively designing spatial blockouts, encounter sightline pacing, and greybox prototypes using <strong>Unity C#</strong>, <strong>Unreal Engine</strong>, <strong>Blender 3D</strong>, and <strong>ProBuilder</strong>[cite: 26, 27]. Collaborating across indie titles including the nightmare labyrinth for <em>Devil's Legacy</em> and urban blockouts for <em>As The Stars Fall</em>.
+              Actively designing spatial blockouts, encounter sightline pacing, and greybox prototypes using <strong>Unity C#</strong>, <strong>Unreal Engine</strong>, <strong>Blender 3D</strong>, and <strong>ProBuilder</strong>. Collaborating across indie titles including the nightmare labyrinth for <em>Devil's Legacy</em> and urban blockouts for <em>As The Stars Fall</em>.
             </p>
           </div>
         </section>
@@ -167,17 +162,14 @@ export default function Home({ onSelectProject, onNavigate }) {
             <h2 className="section-heading">FEATURED PROJECTS</h2>
           </div>
 
-          {/* Row 1: 4 Cards */}
           <div className="yp-projects-grid yp-grid-4">
             {topProjects.map(renderCard)}
           </div>
 
-          {/* Row 2: 5th & 6th cards aligned */}
           <div className="yp-projects-grid-bottom">
             {bottomProjects.map(renderCard)}
           </div>
 
-          {/* View All Projects Button */}
           <div className="view-all-projects-box">
             <button
               className="view-all-btn"
