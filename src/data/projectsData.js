@@ -252,66 +252,76 @@ export const projectsData = [
   // ==========================================
   // 4. 3D MODELS (5 DISCRETE HARD-SURFACE MODELS)
   // ==========================================
+  // ==========================================
+  // 4. 3D MODELS (6 DISCRETE HARD-SURFACE MODELS)
+  // ==========================================
   {
     id: '3d-models-collection',
     category: '3D MODELS',
     title: 'Hard-Surface 3D Asset Collection',
     caseTitle: '3D MODELING & PROPS : HARD-SURFACE PIPELINE',
-    subtitle: 'Blender SubD & Game-Ready Topology',
+    subtitle: 'Blender SubD, Real-Time Game Assets & Product Viz',
     badge: '3D SHOWCASE',
     engine: 'Blender 3D',
     role: 'Hard-Surface 3D Modeler',
     studio: 'Asset Showcase',
-    duration: '2025 - 2026',
+    duration: '2+ YEARS PRACTICE',
     thumbnail: '/Data/7.png',
     thumbStyle: { objectPosition: 'center center', transform: 'scale(1.0)' },
     videoFile: '/Data/11.mp4',
-    // 5 discrete models mapped exactly
+    // 6 Discrete Models with Accurate Mapping
     modelsList: [
       {
-        name: 'Model 01: Sci-Fi Industrial Complex / Structure',
+        name: 'Model 01: Combat Robot Foot & Mechanical Leg Assembly',
         images: ['/Data/69.png', '/Data/66.png', '/Data/64.png'],
-        desc: 'Modular industrial structure modeled with clean bevel edge weights and non-destructive booleans.'
+        desc: 'Hard-surface mechanical robot foot and joint articulation modeled with non-destructive booleans, clean bevel modifiers, and functional pivot clearance.'
       },
       {
-        name: 'Model 02: Tactical Combat Equipment / Hard-Surface Prop',
+        name: 'Model 02: Ring Spaceship (Q-Ship)',
         images: ['/Data/61.png', '/Data/56.png', '/Data/5.jpg', '/Data/6.jpg', '/Data/54.png'],
-        desc: 'High-to-low poly baked prop featuring weighted normals and optimized UV packing.'
+        desc: 'Intricate circular sci-fi spaceship featuring weighted normals, panelling detail, thruster housing, and high-to-low poly baking workflows.'
       },
       {
-        name: 'Model 03: Mechanical Weapon / Assembly Turret',
+        name: 'Model 03: 3D Product Perfume Bottle (Early Visualization Practice)',
         video: '/Data/11.mp4',
         images: ['/Data/10.png'],
-        desc: 'Full mechanical assembly featuring rotating joint clearances and functional mechanical topology.'
+        desc: 'Product modeling and shader lookdev practice from early Blender training, focusing on glass transmission, metallic cap reflections, and studio lighting.'
       },
       {
-        name: 'Model 04: Futuristic Transport & Supply Container Unit',
+        name: 'Model 04: Sci-Fi Modular Tower & Environment Spire',
         images: ['/Data/7.png', '/Data/8.png', '/Data/9.png'],
-        desc: 'Heavy cargo and military storage container designed for modular sci-fi environment kits.'
+        desc: 'Stylized vertical sci-fi beacon tower designed for real-time game environments with modular geometry and high texel density.'
       },
       {
-        name: 'Model 05: Stylized Character & Action Prop Props',
+        name: 'Model 05: Hand-Painted & Textured Sci-Fi Storage Box',
         images: ['/Data/2.png', '/Data/3.png'],
-        desc: 'Low-poly game-ready models built with minimal tri budgets and clean silhouette readability.'
+        desc: 'Game-ready textured supply crate featuring painted graffiti aesthetics ("Help Me!"), edge wear weathering, and optimized low-poly budget.'
+      },
+      {
+        name: 'Model 06: Robotic Sci-Fi Hard-Surface Crate / Box',
+        images: ['/Data/80000.png', '/Data/800011.png', '/Data/800012.png'],
+        desc: 'Hard-surface robotic sci-fi storage box featuring mechanical locking latches, reinforced bevel chamfers, and SubD topology optimized for modular props.'
       }
     ],
     gallery: [
+      'public/Data/800000.png', '/Data/800011.png', '/Data/800012.png',
       '/Data/7.png', '/Data/8.png', '/Data/9.png', '/Data/10.png',
       '/Data/69.png', '/Data/66.png', '/Data/64.png',
       '/Data/61.png', '/Data/56.png', '/Data/54.png'
     ],
     summary:
-      'Comprehensive hard-surface modeling showcase created in Blender, encompassing mechanical assemblies, modular environment structures, and optimized game-ready props.',
-    subtext: 'Built utilizing MeshMachine, BoolTool, and weighted normal passes for pristine PBR baking.',
+      'A comprehensive collection of 6 distinct hard-surface assets created in Blender, encompassing mechanical robot joints, sci-fi ring spacecraft, product visualization studies, modular towers, robotic storage crates, and painted game props.',
+    subtext: 'Built utilizing MeshMachine, BoolTool, and weighted normal passes for clean real-time PBR shading.',
     section1Title: 'TOPOLOGY & BAKING PIPELINE',
     section1Para: 'Maintained strict quad-dominant flow during SubD phases, converting into clean triangulated low-poly game hulls without shading artifacts.',
     highlights: [
       'SubD high-poly modeling with procedural chamfers and bevel modifiers.',
+      'Robotic crate engineered with modular mechanical latches and handles.',
       'Weighted normal workflow eliminating the need for excessive supporting edge loops.',
       'Clean UV unwrapping with >85% packing efficiency and mirrored symmetry optimizations.',
       'Verified in Unity and Unreal Engine under varying dynamic lighting angles.'
     ],
-    section2Title: 'MODULAR ENVIRONMENT INTEGRATION',
+    section2Title: 'MODULAR ASSET ASSEMBLY',
     section2Para: 'Standardized pivot points and grid snaps enable seamless modular kit assembly directly in-engine.'
   },
 

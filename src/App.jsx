@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import SplashScreen from './components/SplashScreen';
 import ProjectDetail from './components/ProjectDetail';
+import ResumeModal from './components/ResumeModal';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import About from './pages/About';
+import { trackVisitor } from './utils/visitorTracker';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
   const [selectedProject, setSelectedProject] = useState(null);
+  const [showResumeModal, setShowResumeModal] = useState(false);
+
+  useEffect(() => {
+    trackVisitor();
+  }, []);
 
   const handleNavigate = (tab) => {
     setActiveTab(tab);
@@ -56,15 +63,14 @@ export default function App() {
         </div>
 
         <div className="nav-actions">
-          {/* Click karne par direct Resume.pdf open hogi */}
-          <a
-            href="/Data/Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* Dashboard / Navbar Resume Button */}
+          <button
             className="resume-btn"
+            onClick={() => setShowResumeModal(true)}
+            title="Open Interactive Resume"
           >
             MY RESUME 🗎
-          </a>
+          </button>
           <a
             href="https://www.linkedin.com/in/chetan-joshi-50922a2a4/"
             target="_blank"
@@ -92,12 +98,15 @@ export default function App() {
           <Home
             onSelectProject={(proj) => setSelectedProject(proj)}
             onNavigate={handleNavigate}
+            onOpenResume={() => setShowResumeModal(true)}
           />
         )}
         {activeTab === 'projects' && (
           <Projects onSelectProject={(proj) => setSelectedProject(proj)} />
         )}
-        {activeTab === 'about' && <About />}
+        {activeTab === 'about' && (
+          <About onOpenResume={() => setShowResumeModal(true)} />
+        )}
       </div>
 
       {/* 5. Footer */}
@@ -111,8 +120,15 @@ export default function App() {
           project={selectedProject}
           onClose={() => setSelectedProject(null)}
           onNavigate={handleNavigate}
+          onOpenResume={() => setShowResumeModal(true)}
         />
       )}
+
+      {/* 7. Fullscreen Interactive Resume Panel */}
+      <ResumeModal
+        isOpen={showResumeModal}
+        onClose={() => setShowResumeModal(false)}
+      />
     </div>
   );
 }
