@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './SplashScreen.css';
 
-export default function SplashScreen({ videoRef, onLoaded }) {
-  const [progress, setProgress] = useState(15);
-  const [statusText, setStatusText] = useState('INITIALIZING PERSISTENT 3D CANVASES...');
+export default function SplashScreen({ videoRef, onVideoReady, onLoaded }) {
+  const [progress, setProgress] = useState(5);
+  const [statusText, setStatusText] = useState('DOWNLOADING PERSISTENT VIDEO CACHE...');
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    let fallbackSafety = null;
+    const videoUrl = '/Data/background_scroll.mp4';
 
     const finishLoading = () => {
       if (!isMounted) return;
@@ -21,17 +21,17 @@ export default function SplashScreen({ videoRef, onLoaded }) {
         setTimeout(() => {
           if (isMounted && onLoaded) onLoaded();
         }, 650);
-      }, 350);
+      }, 400);
     };
 
-    const checkVideoState = () => {
-      const video = videoRef?.current;
-      if (!video) return;
+    // Real video byte stream fetch (Zero browser stutter/stops)
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', videoUrl, true);
+    xhr.responseType = 'blob';
 
-      // Real video buffer tracking
-      if (video.buffered && video.buffered.length > 0 && video.duration) {
-        const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-        const percent = Math.min(95, Math.floor((bufferedEnd / video.duration) * 100));
+    xhr.onprogress = (event) => {
+      if (event.lengthComputable && isMounted) {
+        const percent = Math.min(96, Math.floor((event.loaded / event.total) * 100));
         setProgress((prev) => Math.max(prev, percent));
 
         if (percent > 40 && percent < 75) {
@@ -40,44 +40,34 @@ export default function SplashScreen({ videoRef, onLoaded }) {
           setStatusText('CALIBRATING KINEMATIC RAYCAST MATRICES...');
         }
       }
+    };
 
-      // readyState 4 = HAVE_ENOUGH_DATA (Can play all the way through without stutter)
-      if (video.readyState >= 4) {
-        video.removeEventListener('progress', checkVideoState);
-        video.removeEventListener('canplaythrough', checkVideoState);
+    xhr.onload = () => {
+      if (xhr.status === 200 && isMounted) {
+        const blobUrl = URL.createObjectURL(xhr.response);
+        if (onVideoReady) onVideoReady(blobUrl);
+
+        if (videoRef?.current) {
+          videoRef.current.src = blobUrl;
+          videoRef.current.load();
+        }
+        finishLoading();
+      } else {
         finishLoading();
       }
     };
 
-    const video = videoRef?.current;
-    if (video) {
-      if (video.readyState >= 4) {
-        finishLoading();
-      } else {
-        video.addEventListener('progress', checkVideoState);
-        video.addEventListener('canplaythrough', finishLoading, { once: true });
-        video.addEventListener('loadeddata', checkVideoState);
-
-        // Force browser to start downloading immediately
-        video.load();
-      }
-    }
-
-    // High timeout guard: In case of extreme 2G network, maximum hold 12s
-    fallbackSafety = setTimeout(() => {
+    xhr.onerror = () => {
       finishLoading();
-    }, 12000);
+    };
+
+    xhr.send();
 
     return () => {
       isMounted = false;
-      clearTimeout(fallbackSafety);
-      if (video) {
-        video.removeEventListener('progress', checkVideoState);
-        video.removeEventListener('canplaythrough', finishLoading);
-        video.removeEventListener('loadeddata', checkVideoState);
-      }
+      xhr.abort();
     };
-  }, [videoRef, onLoaded]);
+  }, [videoRef, onVideoReady, onLoaded]);
 
   return (
     <div className={`splash-screen-root ${isFadingOut ? 'fade-out' : ''}`} data-lenis-prevent="true">

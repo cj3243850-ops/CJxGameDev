@@ -19,6 +19,7 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
   const [modalSubject, setModalSubject] = useState('');
+  const [videoBlobUrl, setVideoBlobUrl] = useState(null);
 
   // 1. Fluid Responsive Viewport Meta
   useEffect(() => {
@@ -31,7 +32,7 @@ export default function App() {
     metaTag.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0');
   }, []);
 
-  // 2. Silent Analytics/Tracker
+  // 2. Silent Analytics Tracker
   useEffect(() => {
     initVisitorTracker();
   }, []);
@@ -41,7 +42,7 @@ export default function App() {
     setIsHireModalOpen(true);
   };
 
-  // 3. Lenis Scroll Freeze jab modal ya splash active ho
+  // 3. Lenis Scroll Freeze jab modal ya splash screen active ho
   useEffect(() => {
     if (isLoading || selectedProject || isHireModalOpen) {
       if (lenisRef.current) lenisRef.current.stop();
@@ -50,7 +51,7 @@ export default function App() {
     }
   }, [isLoading, selectedProject, isHireModalOpen]);
 
-  // 4. Smooth Lenis Engine & 3D Video Scrubbing
+  // 4. Smooth Lenis Engine & Hardware-Accelerated Video Scrubbing
   useEffect(() => {
     const isMobile = window.innerWidth <= 768;
 
@@ -59,7 +60,7 @@ export default function App() {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: isMobile ? 0.9 : 0.85,
+      wheelMultiplier: isMobile ? 0.9 : 0.8,
       touchMultiplier: 1.1,
     });
 
@@ -104,26 +105,26 @@ export default function App() {
     const animateLoop = (time) => {
       lenis.raf(time);
 
-      // Smooth kinematic interpolation
+      // Smooth kinematic interpolation (Lerp)
       const delta = targetProgress - renderedProgress;
       if (Math.abs(delta) < 0.0001) {
         renderedProgress = targetProgress;
       } else {
-        renderedProgress += delta * 0.085;
+        renderedProgress += delta * 0.075;
       }
 
-      // Accurate video scrubbing
+      // Buttery smooth frame scrubbing
       if (video && video.readyState >= 2 && video.duration) {
         const totalDuration = video.duration;
         const calculatedTime = renderedProgress * (totalDuration - 0.03);
         const safeTime = Math.max(0.001, Math.min(totalDuration - 0.02, calculatedTime));
 
-        if (!video.seeking && Math.abs(video.currentTime - safeTime) > 0.012) {
+        if (!video.seeking && Math.abs(video.currentTime - safeTime) > 0.01) {
           video.currentTime = safeTime;
         }
       }
 
-      // Parallax 3D Depth
+      // Dynamic Depth / Camera zoom
       if (stageLayer) {
         const subtleZoom = 1.01 + renderedProgress * 0.025;
         stageLayer.style.transform = `scale(${subtleZoom.toFixed(4)}) translateZ(0)`;
@@ -144,14 +145,15 @@ export default function App() {
       cancelAnimationFrame(rafId);
       lenis.destroy();
     };
-  }, []);
+  }, [videoBlobUrl]);
 
   return (
     <div className="portfolio-cinematic-root">
-      {/* Splash Screen Preloader - Holds till video buffers */}
+      {/* Splash Screen Preloader: Video blob ready hone tak page lock rakhega */}
       {isLoading && (
         <SplashScreen
           videoRef={videoRef}
+          onVideoReady={(blobUrl) => setVideoBlobUrl(blobUrl)}
           onLoaded={() => setIsLoading(false)}
         />
       )}
@@ -164,7 +166,7 @@ export default function App() {
           <video
             ref={videoRef}
             className="persistent-stage-video"
-            src="/Data/background_scroll.mp4"
+            src={videoBlobUrl || "/Data/background_scroll.mp4"}
             muted
             playsInline
             preload="auto"
