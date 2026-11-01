@@ -1,73 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import './SplashScreen.css';
 
-export default function SplashScreen({ videoRef, onVideoReady, onLoaded }) {
-  const [progress, setProgress] = useState(5);
-  const [statusText, setStatusText] = useState('DOWNLOADING PERSISTENT VIDEO CACHE...');
+export default function SplashScreen({ onLoaded }) {
+  const [progress, setProgress] = useState(12);
+  const [statusText, setStatusText] = useState('INITIALIZING GRAPHICS ENGINE...');
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    const videoUrl = '/Data/background_scroll.mp4';
+    let timer = null;
 
-    const finishLoading = () => {
+    const stages = [
+      { p: 35, text: 'CALIBRATING KINEMATICS & MATRIX CANVASES...' },
+      { p: 68, text: 'PRE-RENDERING MESH DATA & SHADERS...' },
+      { p: 92, text: 'WARMING PARALLAX DEPTH MATRICES...' },
+      { p: 100, text: 'SYSTEM READY // PIPELINE LAUNCH' },
+    ];
+
+    let currentStage = 0;
+
+    const runStages = () => {
       if (!isMounted) return;
-      setProgress(100);
-      setStatusText('PIPELINE READY // SYSTEM LAUNCH');
-
-      setTimeout(() => {
-        if (!isMounted) return;
-        setIsFadingOut(true);
-        setTimeout(() => {
-          if (isMounted && onLoaded) onLoaded();
-        }, 650);
-      }, 400);
-    };
-
-    // Real video byte stream fetch (Zero browser stutter/stops)
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', videoUrl, true);
-    xhr.responseType = 'blob';
-
-    xhr.onprogress = (event) => {
-      if (event.lengthComputable && isMounted) {
-        const percent = Math.min(96, Math.floor((event.loaded / event.total) * 100));
-        setProgress((prev) => Math.max(prev, percent));
-
-        if (percent > 40 && percent < 75) {
-          setStatusText('BUFFERING PERSISTENT 3D STAGE & CANVASES...');
-        } else if (percent >= 75) {
-          setStatusText('CALIBRATING KINEMATIC RAYCAST MATRICES...');
-        }
-      }
-    };
-
-    xhr.onload = () => {
-      if (xhr.status === 200 && isMounted) {
-        const blobUrl = URL.createObjectURL(xhr.response);
-        if (onVideoReady) onVideoReady(blobUrl);
-
-        if (videoRef?.current) {
-          videoRef.current.src = blobUrl;
-          videoRef.current.load();
-        }
-        finishLoading();
+      if (currentStage < stages.length) {
+        const target = stages[currentStage];
+        setProgress(target.p);
+        setStatusText(target.text);
+        currentStage++;
+        const nextDelay = currentStage === stages.length ? 300 : 220;
+        timer = setTimeout(runStages, nextDelay);
       } else {
-        finishLoading();
+        // Complete splash
+        setTimeout(() => {
+          if (!isMounted) return;
+          setIsFadingOut(true);
+          setTimeout(() => {
+            if (isMounted && onLoaded) onLoaded();
+          }, 600);
+        }, 200);
       }
     };
 
-    xhr.onerror = () => {
-      finishLoading();
-    };
-
-    xhr.send();
+    timer = setTimeout(runStages, 120);
 
     return () => {
       isMounted = false;
-      xhr.abort();
+      clearTimeout(timer);
     };
-  }, [videoRef, onVideoReady, onLoaded]);
+  }, [onLoaded]);
 
   return (
     <div className={`splash-screen-root ${isFadingOut ? 'fade-out' : ''}`} data-lenis-prevent="true">

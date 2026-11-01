@@ -6,21 +6,20 @@ import Mid from './components/Mid';
 import Footer from './components/Footer';
 import ProjectDetail from './components/ProjectDetail';
 import ContactModal from './components/ContactModal';
-import CyberGridFallback from './components/CyberGridFallback';
+import SplashScreen from './components/SplashScreen';
+import CinematicBackground from './components/CinematicBackground';
 import { initVisitorTracker } from './utils/visitorTracker';
 
 export default function App() {
-  const videoRef = useRef(null);
-  const stageLayerRef = useRef(null);
-  const backdropLayerRef = useRef(null);
   const lenisRef = useRef(null);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
   const [modalSubject, setModalSubject] = useState('');
-  const [isVideoReady, setIsVideoReady] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
-  // 1. Responsive Viewport Meta Tag
+  // 1. Fluid Responsive Viewport Meta
   useEffect(() => {
     let metaTag = document.querySelector('meta[name="viewport"]');
     if (!metaTag) {
@@ -31,127 +30,73 @@ export default function App() {
     metaTag.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0');
   }, []);
 
-  // 2. Analytics Tracker
+  // 2. Silent Analytics & Visitor Tracking
   useEffect(() => {
     initVisitorTracker();
   }, []);
 
-  // 3. Background 100% Video Blob Fetcher (Zero Freeze/Lag)
-  useEffect(() => {
-    let isCancelled = false;
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/Data/background_scroll.mp4', true);
-    xhr.responseType = 'blob';
-
-    xhr.onload = () => {
-      if (xhr.status === 200 && !isCancelled) {
-        const blobUrl = URL.createObjectURL(xhr.response);
-        if (videoRef.current) {
-          videoRef.current.src = blobUrl;
-          videoRef.current.load();
-          videoRef.current.oncanplaythrough = () => {
-            if (!isCancelled) {
-              videoRef.current.pause();
-              videoRef.current.currentTime = 0.001;
-              setIsVideoReady(true);
-            }
-          };
-        }
-      }
-    };
-
-    xhr.send();
-
-    return () => {
-      isCancelled = true;
-      xhr.abort();
-    };
-  }, []);
-
   const handleOpenContact = (subjectText = '') => {
-    setModalSubject(subjectText || 'General Collaboration / Evaluation Request');
+    setModalSubject(subjectText || 'General Collaboration / Level Design Review');
     setIsHireModalOpen(true);
   };
 
-  // 4. Modal Scroll Freeze
+  // 3. Modal / Overlay Lenis Lock
   useEffect(() => {
-    if (selectedProject || isHireModalOpen) {
+    if (isLoading || selectedProject || isHireModalOpen) {
       if (lenisRef.current) lenisRef.current.stop();
     } else {
       if (lenisRef.current) lenisRef.current.start();
     }
-  }, [selectedProject, isHireModalOpen]);
+  }, [isLoading, selectedProject, isHireModalOpen]);
 
-  // 5. Smooth Lenis Engine & Scrubbing
+  // 4. Smooth Kinematic Lenis Engine
   useEffect(() => {
     const isMobile = window.innerWidth <= 768;
 
     const lenis = new Lenis({
-      duration: isMobile ? 1.0 : 1.4,
+      duration: isMobile ? 1.0 : 1.35,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: isMobile ? 0.9 : 0.8,
-      touchMultiplier: 1.1,
+      wheelMultiplier: isMobile ? 0.9 : 0.85,
+      touchMultiplier: 1.15,
     });
 
     lenisRef.current = lenis;
 
-    const video = videoRef.current;
-    const stageLayer = stageLayerRef.current;
-    const backdropLayer = backdropLayerRef.current;
-
-    let targetProgress = 0;
-    let renderedProgress = 0;
-
     lenis.on('scroll', (e) => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       if (maxScroll > 0) {
-        targetProgress = Math.max(0, Math.min(1, e.scroll / maxScroll));
+        setScrollProgress(Math.max(0, Math.min(1, e.scroll / maxScroll)));
       }
     });
 
-    let rafId = null;
+    // Intersection observer for section reveals
+    const revealElements = document.querySelectorAll('.reveal-on-scroll');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-inview');
+          } else {
+            entry.target.classList.remove('is-inview');
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -5% 0px' }
+    );
+    revealElements.forEach((el) => observer.observe(el));
 
+    let rafId = null;
     const animateLoop = (time) => {
       lenis.raf(time);
-
-      // Kinematic Lerp interpolation
-      const delta = targetProgress - renderedProgress;
-      if (Math.abs(delta) < 0.0001) {
-        renderedProgress = targetProgress;
-      } else {
-        renderedProgress += delta * 0.08;
-      }
-
-      // Smooth Video Scrubbing (Active only when blob ready)
-      if (video && video.readyState >= 2 && video.duration) {
-        const totalDuration = video.duration;
-        const calculatedTime = renderedProgress * (totalDuration - 0.03);
-        const safeTime = Math.max(0.001, Math.min(totalDuration - 0.02, calculatedTime));
-
-        if (!video.seeking && Math.abs(video.currentTime - safeTime) > 0.01) {
-          video.currentTime = safeTime;
-        }
-      }
-
-      // Parallax Depth
-      if (stageLayer) {
-        const subtleZoom = 1.01 + renderedProgress * 0.025;
-        stageLayer.style.transform = `scale(${subtleZoom.toFixed(4)}) translateZ(0)`;
-      }
-
-      if (backdropLayer) {
-        const shadowDepth = 0.2 + renderedProgress * 0.4;
-        backdropLayer.style.opacity = shadowDepth.toFixed(2);
-      }
-
       rafId = requestAnimationFrame(animateLoop);
     };
 
     rafId = requestAnimationFrame(animateLoop);
 
     return () => {
+      observer.disconnect();
       cancelAnimationFrame(rafId);
       lenis.destroy();
     };
@@ -159,45 +104,29 @@ export default function App() {
 
   return (
     <div className="portfolio-cinematic-root">
-      {/* Background Stage: Canvas to Video Smooth Crossfade */}
-      <div className="layer-persistent-stage" aria-hidden="true">
-        <CyberGridFallback isVideoReady={isVideoReady} />
+      {/* Dynamic Procedural Greybox Level Background */}
+      <CinematicBackground scrollProgress={scrollProgress} />
 
-        <div className="layer-studio-backdrop" ref={backdropLayerRef} />
+      {/* Splash Engine Bootloader */}
+      {isLoading && (
+        <SplashScreen onLoaded={() => setIsLoading(false)} />
+      )}
 
-        <div
-          className="layer-3d-viewport"
-          ref={stageLayerRef}
-          style={{
-            opacity: isVideoReady ? 1 : 0,
-            transition: 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1)',
-          }}
-        >
-          <video
-            ref={videoRef}
-            className="persistent-stage-video"
-            muted
-            playsInline
-            preload="auto"
-          />
-        </div>
-
-        <div className="layer-studio-vignette" />
-      </div>
-
-      {/* Main Foreground Interactive Content */}
+      {/* Structured Single-Page Hierarchy */}
       <div className="layer-scroll-content">
         <Header onOpenHireModal={() => handleOpenContact('Direct Contract Inquiry')} />
 
-        <Mid
-          onSelectProject={(proj) => setSelectedProject(proj)}
-          onRequestBuild={(title) => handleOpenContact(`Build Access Request: ${title}`)}
-        />
+        <main className="portfolio-main-body">
+          <Mid
+            onSelectProject={(proj) => setSelectedProject(proj)}
+            onRequestBuild={(title) => handleOpenContact(`Build Access Request: ${title}`)}
+          />
+        </main>
 
         <Footer onOpenHireModal={() => handleOpenContact('Direct Collaboration Request')} />
       </div>
 
-      {/* Project Detail Modal */}
+      {/* Modal Overlays */}
       {selectedProject && (
         <ProjectDetail
           project={selectedProject}
@@ -206,7 +135,6 @@ export default function App() {
         />
       )}
 
-      {/* Contact Modal */}
       <ContactModal
         isOpen={isHireModalOpen}
         initialSubject={modalSubject}
