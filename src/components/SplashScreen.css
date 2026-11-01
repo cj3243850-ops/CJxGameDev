@@ -22,7 +22,6 @@
   pointer-events: none;
 }
 
-/* Background Subtle Grid Scan */
 .splash-grid-background {
   position: absolute;
   inset: 0;
@@ -39,7 +38,6 @@
   50% { opacity: 0.9; }
 }
 
-/* Center Terminal Container */
 .splash-center-terminal {
   position: relative;
   z-index: 2;
@@ -51,7 +49,6 @@
   align-items: flex-start;
 }
 
-/* Brand Wordmark */
 .splash-brand-block {
   margin-bottom: 24px;
 }
@@ -75,7 +72,6 @@
   display: block;
 }
 
-/* Telemetry Display (Number + Bar) */
 .splash-telemetry-display {
   width: 100%;
   display: flex;
@@ -144,7 +140,6 @@
   color: #8e95a5;
 }
 
-/* MUSA / BMW Tri-Color Accent Line */
 .splash-accent-strip {
   display: flex;
   height: 2.5px;

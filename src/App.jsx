@@ -31,7 +31,7 @@ export default function App() {
     metaTag.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0');
   }, []);
 
-  // 2. Silent Visitor Tracker
+  // 2. Silent Analytics/Tracker
   useEffect(() => {
     initVisitorTracker();
   }, []);
@@ -55,11 +55,11 @@ export default function App() {
     const isMobile = window.innerWidth <= 768;
 
     const lenis = new Lenis({
-      duration: isMobile ? 1.0 : 1.5,
+      duration: isMobile ? 1.0 : 1.4,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: isMobile ? 0.9 : 0.8,
+      wheelMultiplier: isMobile ? 0.9 : 0.85,
       touchMultiplier: 1.1,
     });
 
@@ -104,24 +104,26 @@ export default function App() {
     const animateLoop = (time) => {
       lenis.raf(time);
 
-      // Smooth interpolation for video scrubbing
+      // Smooth kinematic interpolation
       const delta = targetProgress - renderedProgress;
       if (Math.abs(delta) < 0.0001) {
         renderedProgress = targetProgress;
       } else {
-        renderedProgress += delta * 0.08;
+        renderedProgress += delta * 0.085;
       }
 
+      // Accurate video scrubbing
       if (video && video.readyState >= 2 && video.duration) {
         const totalDuration = video.duration;
-        const calculatedTime = renderedProgress * (totalDuration - 0.04);
-        const safeTime = Math.max(0.001, Math.min(totalDuration - 0.03, calculatedTime));
+        const calculatedTime = renderedProgress * (totalDuration - 0.03);
+        const safeTime = Math.max(0.001, Math.min(totalDuration - 0.02, calculatedTime));
 
-        if (!video.seeking && Math.abs(video.currentTime - safeTime) > 0.015) {
+        if (!video.seeking && Math.abs(video.currentTime - safeTime) > 0.012) {
           video.currentTime = safeTime;
         }
       }
 
+      // Parallax 3D Depth
       if (stageLayer) {
         const subtleZoom = 1.01 + renderedProgress * 0.025;
         stageLayer.style.transform = `scale(${subtleZoom.toFixed(4)}) translateZ(0)`;
@@ -146,7 +148,7 @@ export default function App() {
 
   return (
     <div className="portfolio-cinematic-root">
-      {/* Splash Screen Preloader */}
+      {/* Splash Screen Preloader - Holds till video buffers */}
       {isLoading && (
         <SplashScreen
           videoRef={videoRef}
