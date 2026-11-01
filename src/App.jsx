@@ -20,7 +20,7 @@ export default function App() {
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
   const [modalSubject, setModalSubject] = useState('');
 
-  // 1. Standard Fluid Responsive Viewport (Mobile + Desktop automatic)
+  // 1. Fluid Responsive Viewport Meta
   useEffect(() => {
     let metaTag = document.querySelector('meta[name="viewport"]');
     if (!metaTag) {
@@ -55,12 +55,12 @@ export default function App() {
     const isMobile = window.innerWidth <= 768;
 
     const lenis = new Lenis({
-      duration: isMobile ? 1.2 : 1.8,
+      duration: isMobile ? 1.0 : 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: isMobile ? 0.9 : 0.65,
-      touchMultiplier: 1.2,
+      wheelMultiplier: isMobile ? 0.9 : 0.8,
+      touchMultiplier: 1.1,
     });
 
     lenisRef.current = lenis;
@@ -104,11 +104,12 @@ export default function App() {
     const animateLoop = (time) => {
       lenis.raf(time);
 
+      // Smooth interpolation for video scrubbing
       const delta = targetProgress - renderedProgress;
       if (Math.abs(delta) < 0.0001) {
         renderedProgress = targetProgress;
       } else {
-        renderedProgress += delta * 0.045;
+        renderedProgress += delta * 0.08;
       }
 
       if (video && video.readyState >= 2 && video.duration) {
@@ -116,7 +117,7 @@ export default function App() {
         const calculatedTime = renderedProgress * (totalDuration - 0.04);
         const safeTime = Math.max(0.001, Math.min(totalDuration - 0.03, calculatedTime));
 
-        if (!video.seeking && Math.abs(video.currentTime - safeTime) > 0.008) {
+        if (!video.seeking && Math.abs(video.currentTime - safeTime) > 0.015) {
           video.currentTime = safeTime;
         }
       }
