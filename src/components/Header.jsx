@@ -10,7 +10,8 @@ export default function Header({ onOpenHireModal }) {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      if (currentScrollY > 90) {
+      if (currentScrollY > 60) {
+        // Fast scroll down -> hide, scroll up -> immediate reveal
         if (currentScrollY > lastScrollY && currentScrollY - lastScrollY > 6) {
           setNavVisible(false);
         } else if (lastScrollY - currentScrollY > 6) {
@@ -42,7 +43,7 @@ export default function Header({ onOpenHireModal }) {
 
   return (
     <header className="automotive-header-root">
-      {/* 1. Smart Scroll Auto-Hide Navbar */}
+      {/* 1. Global High-Priority Sticky/Fixed Navigation Layer */}
       <nav className={`musa-top-nav ${navVisible ? 'nav-visible' : 'nav-hidden'}`}>
         <div
           className="musa-brand-group"
@@ -81,7 +82,7 @@ export default function Header({ onOpenHireModal }) {
           <button
             type="button"
             className="nav-hire-pill"
-            onClick={onOpenHireModal}
+            onClick={handleHireClick}
           >
             <span>HIRE ME</span>
             <span className="hire-arrow">➔</span>
