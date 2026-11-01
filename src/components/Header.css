@@ -1,0 +1,440 @@
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+.automotive-header-root {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* =========================================================
+   TOP NAV (Smart Scroll Hide & Reveal)
+   ========================================================= */
+.musa-top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  z-index: 100;
+  background: linear-gradient(180deg, rgba(5, 6, 8, 0.94) 0%, rgba(5, 6, 8, 0) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  will-change: transform, opacity;
+}
+
+.musa-top-nav.nav-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.musa-top-nav.nav-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+/* Brand Group */
+.musa-brand-group {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  z-index: 102;
+}
+
+.brand-primary-tag {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  line-height: 1;
+  color: #ffffff;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.musa-brand-group:hover .brand-primary-tag {
+  opacity: 0.85;
+  transform: translateX(2px);
+}
+
+.brand-secondary-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 2.5px;
+  color: #8e95a5;
+  margin-top: 5px;
+}
+
+/* Nav Menu Items */
+.musa-nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.nav-text-btn {
+  background: none;
+  border: none;
+  color: #8e95a5;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.2s ease;
+  padding: 6px 0;
+  text-decoration: none;
+}
+
+.nav-text-btn:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.nav-hire-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  color: #050608;
+  padding: 9px 22px;
+  border-radius: 40px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+.nav-hire-pill:hover {
+  background: #e4e7ec;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.25);
+}
+
+.hire-arrow {
+  font-size: 0.75rem;
+  transition: transform 0.25s ease;
+}
+
+.nav-hire-pill:hover .hire-arrow {
+  transform: translateX(4px);
+}
+
+/* Mobile Hamburger Style */
+.musa-mobile-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 102;
+}
+
+.burger-bar {
+  width: 100%;
+  height: 2px;
+  background-color: #ffffff;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.musa-mobile-burger.is-active .top-bar {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.musa-mobile-burger.is-active .mid-bar {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.musa-mobile-burger.is-active .bot-bar {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Mobile Drawer */
+.musa-mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 6, 8, 0.98);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+  z-index: 101;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-15px);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.musa-mobile-drawer.drawer-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.mobile-drawer-btn {
+  background: none;
+  border: none;
+  color: #e5e7eb;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mobile-drawer-pill {
+  margin-top: 10px;
+}
+
+/* =========================================================
+   FREE-FLOATING HERO VIEWPORT
+   ========================================================= */
+.musa-hero-viewport.right-aligned {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 0 5% 45px 5%;
+}
+
+@media (max-width: 900px) {
+  .musa-hero-viewport.right-aligned {
+    align-items: flex-start;
+  }
+}
+
+.floating-hero-block {
+  max-width: 740px;
+  width: 100%;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0;
+  animation: heroFloatIdle 7.5s ease-in-out infinite;
+}
+
+@keyframes heroFloatIdle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+
+/* Staggered Load Animations */
+.hero-anim-1 { animation: heroEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
+.hero-anim-2 { animation: heroEntrance 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
+.hero-anim-3 { animation: heroEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) 0.36s both; }
+.hero-anim-4 { animation: heroEntrance 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both; }
+.hero-anim-5 { animation: heroEntrance 1.1s cubic-bezier(0.16, 1, 0.6s both); }
+
+@keyframes heroEntrance {
+  0% { 
+    opacity: 0; 
+    transform: translateY(35px) scale(0.985); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+/* Monumental Display Name */
+.hero-dominant-display {
+  font-family: 'Teko', sans-serif;
+  font-size: 7.8rem;
+  line-height: 0.85;
+  letter-spacing: 2.8px;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  text-shadow: 0 12px 45px rgba(0, 0, 0, 0.95);
+}
+
+@media (max-width: 900px) {
+  .hero-dominant-display { font-size: 5.4rem; }
+}
+
+@media (max-width: 540px) {
+  .hero-dominant-display { font-size: 3.8rem; }
+}
+
+/* Technical Level Designer Subtitle */
+.hero-sub-designer-tag {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 4.5px;
+  color: #e5e7eb;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.85);
+}
+
+@media (max-width: 540px) {
+  .hero-sub-designer-tag {
+    font-size: 0.92rem;
+    letter-spacing: 2.5px;
+  }
+}
+
+/* Narrative Body */
+.hero-subordinate-body {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: #a1a1aa;
+  margin-top: 18px;
+  max-width: 620px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+}
+
+@media (max-width: 540px) {
+  .hero-subordinate-body {
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+}
+
+/* Action CTA Buttons */
+.hero-cta-line {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.editorial-cta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 28px;
+  border-radius: 50px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+.editorial-cta-pill.primary {
+  background: #ffffff;
+  color: #050608;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+.editorial-cta-pill.primary:hover {
+  background: transparent;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.25);
+}
+
+.editorial-cta-pill.primary .cta-arrow {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #050608;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.editorial-cta-pill.primary:hover .cta-arrow {
+  background: #ffffff;
+  color: #050608;
+  transform: translateX(3px);
+}
+
+.editorial-cta-pill.ghost {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+}
+
+.editorial-cta-pill.ghost:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* Tech Telemetry Line */
+.hero-telemetry-badge {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 28px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 2.5px;
+  color: #646b7a;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 20px;
+  margin-top: 38px;
+}
+
+@media (max-width: 900px) {
+  .hero-telemetry-badge {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE NAVBAR MEDIA QUERY
+   ========================================================= */
+@media (max-width: 768px) {
+  .musa-nav-menu.desktop-only {
+    display: none;
+  }
+
+  .musa-mobile-burger {
+    display: flex;
+  }
+
+  .musa-top-nav {
+    height: 72px;
+  }
+
+  .brand-primary-tag {
+    font-size: 1.3rem;
+  }
+
+  .brand-secondary-label {
+    font-size: 0.54rem;
+  }
+}

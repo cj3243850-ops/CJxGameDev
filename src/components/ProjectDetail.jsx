@@ -1,89 +1,234 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ProjectDetail.css';
 
-const SteamIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2a10 10 0 0 0-10 9.87c0 4.8 3.4 8.8 8 9.83v-5.27a3.5 3.5 0 0 1-.77-2.07l-3.21-.92a2.4 2.4 0 0 1-2.42-2.39 2.4 2.4 0 0 1 2.4-2.4c1.16 0 2.12.82 2.36 1.91l3.18.91a3.5 3.5 0 0 1 3.46-.86 3.5 3.5 0 0 1 2.65 2.66 3.5 3.5 0 0 1-.86 3.46v.04l-2.06 3.09a3.5 3.5 0 0 1-1.73-.45v4.54A10 10 0 0 0 12 2Z" />
-  </svg>
-);
-
-const WebIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10" />
-    <line x1="2" y1="12" x2="22" y2="12" />
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-  </svg>
-);
-
-const ShareIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="18" cy="5" r="3" />
-    <circle cx="6" cy="12" r="3" />
-    <circle cx="18" cy="19" r="3" />
-    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-  </svg>
-);
-
-const GamepadIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="6" y1="12" x2="10" y2="12" />
-    <line x1="8" y1="10" x2="8" y2="14" />
-    <line x1="15" y1="13" x2="15.01" y2="13" />
-    <line x1="18" y1="11" x2="18.01" y2="11" />
-    <rect x="2" y="6" width="20" height="12" rx="6" />
-  </svg>
-);
-
-export default function ProjectDetail({ project, onClose, onNavigate, onOpenResume }) {
+export default function ProjectDetail({ project, onClose, onRequestBuild }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [showDemoModal, setShowDemoModal] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+  const [previewMedia, setPreviewMedia] = useState(null);
 
-  // Model Preview Modal State
-  const [previewModal, setPreviewModal] = useState(null);
+  // Unified Media Playback State
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [currentTimeFormatted, setCurrentTimeFormatted] = useState('0:00');
+  const [durationFormatted, setDurationFormatted] = useState('0:00');
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    organization: '',
-    subject: '',
-    message: ''
-  });
+  // Unified Audio State
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+
+  const overlayRef = useRef(null);
+  const ytPlayerRef = useRef(null);
+  const ytContainerRef = useRef(null);
+  const progressIntervalRef = useRef(null);
+  const nativeVideoRef = useRef(null);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        if (previewModal) setPreviewModal(null);
-        else if (showDemoModal) setShowDemoModal(false);
-        else onClose();
-      }
-      if (previewModal) {
-        if (e.key === 'ArrowLeft') handlePrevPreview();
-        if (e.key === 'ArrowRight') handleNextPreview();
+        if (previewMedia) setPreviewMedia(null);
+        else if (onClose) onClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, showDemoModal, previewModal]);
+  }, [onClose, previewMedia]);
 
   useEffect(() => {
     setCurrentSlide(0);
-    setPreviewModal(null);
-    setSubmitStatus(null);
-    window.scrollTo(0, 0);
-
-    if (project) {
-      setFormData({
-        name: '',
-        email: '',
-        organization: '',
-        subject: `[DEMO REQUEST] Playable Build - ${project.title}`,
-        message: `Hi Chetan,\n\nI reviewed your level design case study for "${project.title}" and would like to request access to the playable demo / executable build for spatial evaluation.\n\nPlatform requirement: Windows PC.`
-      });
-    }
+    setPreviewMedia(null);
+    setVideoLoaded(false);
+    setIsPlaying(false);
+    setProgress(0);
+    setDuration(0);
+    setCurrentTimeFormatted('0:00');
+    setDurationFormatted('0:00');
+    if (overlayRef.current) overlayRef.current.scrollTop = 0;
   }, [project]);
+
+  // YouTube API Integration
+  useEffect(() => {
+    if (!project || !project.youtubeId) return;
+
+    let isSubscribed = true;
+
+    const setupPlayer = () => {
+      if (!window.YT || !window.YT.Player) return;
+      if (ytPlayerRef.current) {
+        try {
+          ytPlayerRef.current.destroy();
+        } catch (e) {}
+      }
+
+      ytPlayerRef.current = new window.YT.Player(`custom-yt-${project.youtubeId}`, {
+        videoId: project.youtubeId,
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          modestbranding: 1,
+          rel: 0,
+          iv_load_policy: 3,
+          enablejsapi: 1,
+          origin: window.location.origin
+        },
+        events: {
+          onReady: (e) => {
+            if (!isSubscribed) return;
+            setVideoLoaded(true);
+            const total = e.target.getDuration();
+            setDuration(total);
+            setDurationFormatted(formatTime(total));
+            e.target.setVolume(volume * 100);
+            if (isMuted) e.target.mute();
+            e.target.playVideo();
+            setIsPlaying(true);
+          },
+          onStateChange: (e) => {
+            if (!isSubscribed) return;
+            if (e.data === window.YT.PlayerState.PLAYING) {
+              setIsPlaying(true);
+              setVideoLoaded(true);
+            } else if (e.data === window.YT.PlayerState.PAUSED) {
+              setIsPlaying(false);
+            } else if (e.data === window.YT.PlayerState.ENDED) {
+              setIsPlaying(false);
+              setProgress(100);
+            }
+          }
+        }
+      });
+    };
+
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      window.onYouTubeIframeAPIReady = setupPlayer;
+      document.body.appendChild(tag);
+    } else {
+      setupPlayer();
+    }
+
+    progressIntervalRef.current = setInterval(() => {
+      if (ytPlayerRef.current && typeof ytPlayerRef.current.getCurrentTime === 'function') {
+        const curr = ytPlayerRef.current.getCurrentTime() || 0;
+        const total = ytPlayerRef.current.getDuration() || 1;
+        setProgress((curr / total) * 100);
+        setCurrentTimeFormatted(formatTime(curr));
+      }
+    }, 250);
+
+    return () => {
+      isSubscribed = false;
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+      if (ytPlayerRef.current) {
+        try {
+          ytPlayerRef.current.destroy();
+        } catch (e) {}
+      }
+    };
+  }, [project]);
+
+  const handleNativeTimeUpdate = () => {
+    if (nativeVideoRef.current) {
+      const curr = nativeVideoRef.current.currentTime || 0;
+      const total = nativeVideoRef.current.duration || 1;
+      setProgress((curr / total) * 100);
+      setCurrentTimeFormatted(formatTime(curr));
+    }
+  };
+
+  const handleNativeLoadedMetadata = () => {
+    if (nativeVideoRef.current) {
+      const total = nativeVideoRef.current.duration || 0;
+      setDuration(total);
+      setDurationFormatted(formatTime(total));
+      setVideoLoaded(true);
+      nativeVideoRef.current.volume = isMuted ? 0 : volume;
+      nativeVideoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+    }
+  };
+
+  const formatTime = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  };
+
+  const togglePlay = (e) => {
+    e.stopPropagation();
+    if (project.youtubeId && ytPlayerRef.current && typeof ytPlayerRef.current.getPlayerState === 'function') {
+      if (isPlaying) ytPlayerRef.current.pauseVideo();
+      else ytPlayerRef.current.playVideo();
+    } else if (nativeVideoRef.current) {
+      if (nativeVideoRef.current.paused) {
+        nativeVideoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        nativeVideoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const handleSeek = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const targetTime = clickPos * duration;
+
+    if (project.youtubeId && ytPlayerRef.current && typeof ytPlayerRef.current.seekTo === 'function') {
+      ytPlayerRef.current.seekTo(targetTime, true);
+      setProgress(clickPos * 100);
+    } else if (nativeVideoRef.current) {
+      nativeVideoRef.current.currentTime = targetTime;
+      setProgress(clickPos * 100);
+    }
+  };
+
+  const handleVolumeChange = (newVol) => {
+    const clamped = Math.max(0, Math.min(1, newVol));
+    setVolume(clamped);
+    setIsMuted(clamped === 0);
+
+    if (project.youtubeId && ytPlayerRef.current && typeof ytPlayerRef.current.setVolume === 'function') {
+      if (clamped === 0) ytPlayerRef.current.mute();
+      else {
+        ytPlayerRef.current.unMute();
+        ytPlayerRef.current.setVolume(clamped * 100);
+      }
+    } else if (nativeVideoRef.current) {
+      nativeVideoRef.current.volume = clamped;
+      nativeVideoRef.current.muted = clamped === 0;
+    }
+  };
+
+  const toggleMute = (e) => {
+    e.stopPropagation();
+    if (isMuted) {
+      setIsMuted(false);
+      handleVolumeChange(volume === 0 ? 0.75 : volume);
+    } else {
+      setIsMuted(true);
+      if (project.youtubeId && ytPlayerRef.current && typeof ytPlayerRef.current.mute === 'function') {
+        ytPlayerRef.current.mute();
+      } else if (nativeVideoRef.current) {
+        nativeVideoRef.current.muted = true;
+      }
+    }
+  };
+
+  const toggleFullscreen = (e) => {
+    e.stopPropagation();
+    if (ytContainerRef.current) {
+      if (!document.fullscreenElement) {
+        ytContainerRef.current.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  };
 
   if (!project) return null;
 
@@ -91,611 +236,441 @@ export default function ProjectDetail({ project, onClose, onNavigate, onOpenResu
     ? project.gallery
     : [project.thumbnail];
 
-  const handlePrevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
-  };
+  // Specific checking: Sirf in teen projects par Itch.io khulega
+  const isTengent = project.id === 'tengent-parkour';
+  const isUrbanShowcase = project.id === 'transformation-breakdown' || (project.title && project.title.toLowerCase().includes('urban showcase'));
+  const isCitadel = project.id === 'probuilder-showcase' || project.id === 'citadel-blockout';
 
-  const handleNextSlide = () => {
-    setCurrentSlide((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
-  };
+  // In dono par Request Modal trigger hoga
+  const isStarsFall = project.id === 'as-the-stars-fall';
+  const isDevilsLegacy = project.id === 'devils-legacy';
+  const is3DModels = project.id === '3d-models-collection' || Boolean(project.modelsList);
 
-  // Model Preview Handlers
-  const openModelPreview = (model, startIndex = 0) => {
-    const items = [];
-    if (model.video) items.push({ type: 'video', src: model.video });
-    if (model.images && model.images.length > 0) {
-      model.images.forEach((img) => items.push({ type: 'image', src: img }));
-    }
-    setPreviewModal({
-      modelName: model.name,
-      desc: model.desc,
-      items,
-      currentIndex: startIndex
-    });
-  };
-
-  const handlePrevPreview = () => {
-    if (!previewModal) return;
-    setPreviewModal((prev) => ({
-      ...prev,
-      currentIndex: prev.currentIndex === 0 ? prev.items.length - 1 : prev.currentIndex - 1
-    }));
-  };
-
-  const handleNextPreview = () => {
-    if (!previewModal) return;
-    setPreviewModal((prev) => ({
-      ...prev,
-      currentIndex: prev.currentIndex === prev.items.length - 1 ? 0 : prev.currentIndex + 1
-    }));
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      setSubmitStatus({ success: false, text: 'Please fill in Name, Email & Message.' });
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-
-    try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify({
-          access_key: '979d1ddb-39f6-4394-9d53-5381975ac340',
-          subject: formData.subject,
-          from_name: formData.name,
-          email: formData.email,
-          organization: formData.organization || 'Independent',
-          project_requested: project.title,
-          message: formData.message
-        })
-      });
-
-      const res = await response.json();
-      if (res.success) {
-        setSubmitStatus({ success: true, text: 'Demo request sent successfully to inbox!' });
-        setTimeout(() => {
-          setShowDemoModal(false);
-          setSubmitStatus(null);
-        }, 2000);
-      } else {
-        throw new Error(res.message || 'Submission failed');
-      }
-    } catch {
-      setSubmitStatus({
-        success: false,
-        text: 'Dispatching via email client fallback...'
-      });
-      setTimeout(() => {
-        const mailtoUrl = `mailto:cj3243850@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
-          `${formData.message}\n\nSender:${formData.name} (${formData.email})\nStudio:${formData.organization || 'Independent'}`
-        )}`;
-        window.location.href = mailtoUrl;
-      }, 1200);
-    } finally {
-      setIsSubmitting(false);
+  const handleBuildRequest = (e, customTitle) => {
+    e.stopPropagation();
+    if (onRequestBuild) {
+      onRequestBuild(customTitle || project.title);
+    } else {
+      window.location.href = `mailto:cj3243850@gmail.com?subject=${encodeURIComponent(`[REQUEST ACCESS] ${customTitle || project.title}`)}`;
     }
   };
 
   return (
-    <div className="pd-page-view">
-      {/* Animated Downward Arrow Rails */}
-      <div className="pd-arrow-rail pd-arrow-rail-left">
-        <div className="pd-arrow-track">
-          <span className="pd-rail-arrow-icon">🠓</span>
-          <span className="pd-rail-arrow-icon">🠓</span>
-          <span className="pd-rail-arrow-icon">🠓</span>
-          <span className="pd-rail-arrow-icon">🠓</span>
-          <span className="pd-rail-arrow-icon">🠓</span>
-        </div>
-      </div>
-
-      <div className="pd-arrow-rail pd-arrow-rail-right">
-        <div className="pd-arrow-track">
-          <span className="pd-rail-arrow-icon">🠓</span>
-          <span className="pd-rail-arrow-icon">🠓</span>
-          <span className="pd-rail-arrow-icon">🠓</span>
-          <span className="pd-rail-arrow-icon">🠓</span>
-          <span className="pd-rail-arrow-icon">🠓</span>
-        </div>
-      </div>
-
+    <div className="pd-editorial-overlay" ref={overlayRef} data-lenis-prevent="true">
       {/* Header Bar */}
-      <header className="pd-top-header">
+      <header className="pd-editorial-nav">
         <div className="pd-nav-brand" onClick={onClose}>
-          <img src="/Data/CJ_cPPP4.png" alt="CJ Logo" className="pd-brand-logo" />
+          <span className="pd-nav-brand-title">CJxGameDev</span>
+          <span className="pd-nav-brand-sub">TECHNICAL LEVEL DESIGNER</span>
         </div>
 
-        <nav className="pd-nav-items">
-          <button className="pd-nav-link active" onClick={onClose}>
-            HOME
-          </button>
-          <button
-            className="pd-nav-link"
-            onClick={() => {
-              onClose();
-              if (onNavigate) onNavigate('projects');
-            }}
-          >
-            PROJECTS
-          </button>
-          <button
-            className="pd-nav-link"
-            onClick={() => {
-              onClose();
-              if (onNavigate) onNavigate('about');
-            }}
-          >
-            ABOUT ME
-          </button>
-        </nav>
-
-        <div className="pd-nav-actions">
-          <button
-            className="pd-resume-pill"
-            onClick={() => {
-              if (onOpenResume) onOpenResume();
-            }}
-          >
-            MY RESUME 🗎
-          </button>
-          <a
-            href="https://www.linkedin.com/in/chetan-joshi-50922a2a4/"
-            target="_blank"
-            rel="noreferrer"
-            className="pd-social-icon"
-          >
-            in
+        <div className="pd-nav-controls">
+          <a href="/Data/Resume.pdf" target="_blank" rel="noopener noreferrer" className="pd-resume-link">
+            RESUME (PDF)
           </a>
-          <a
-            href="https://www.youtube.com/@CjxGameDev"
-            target="_blank"
-            rel="noreferrer"
-            className="pd-social-icon"
-          >
-            ▶
-          </a>
-          <button className="pd-nav-close-btn" onClick={onClose} title="Back to Portfolio">
+          <button type="button" className="pd-close-btn" onClick={onClose} title="Close (Esc)">
             ✕
           </button>
         </div>
       </header>
 
-      {/* Main Case Study Article */}
-      <main className="pd-main-article">
-        <h1 className="pd-title-heading">
-          {project.caseTitle || `${project.title.toUpperCase()} : CASE STUDY`}
-        </h1>
-
-        <div className="pd-lead-block">
-          <p className="pd-lead-text">{project.summary}</p>
-          {project.subtext && <p className="pd-lead-subtext">{project.subtext}</p>}
-        </div>
-
-        {/* Studio Meta Card */}
-        <div className="pd-studio-card">
-          <div className="pd-studio-left">
-            <div className="pd-studio-avatar">
-              <span className="pd-avatar-letter">{project.studio ? project.studio.charAt(0) : 'C'}</span>
-            </div>
-            <div className="pd-studio-info">
-              <h4 className="pd-studio-name">{project.studio ? project.studio.toUpperCase() : 'INDEPENDENT'}</h4>
-              <p className="pd-studio-meta">
-                {project.duration} • {project.role.toUpperCase()}
-              </p>
-            </div>
+      {/* Main Content Area */}
+      <main className="pd-editorial-body-wrapper">
+        <div className="pd-lead-editorial">
+          <div className="pd-meta-lead-row">
+            <span>ENGINE: {project.engine ? project.engine.toUpperCase() : 'BLENDER 3D & UNITY'}</span>
+            <span>/</span>
+            <span>ROLE: {is3DModels ? '3D HARD-SURFACE ARTIST' : 'TECHNICAL LEVEL DESIGNER'}</span>
+            <span>/</span>
+            <span>DURATION: {project.duration || '2025 - 2026'}</span>
           </div>
 
-          <div className="pd-studio-right">
-            <button
-              className="pd-request-demo-pill"
-              onClick={() => setShowDemoModal(true)}
-              title="Request Playable Demo / Build Access"
-            >
-              <GamepadIcon />
-              <span>REQUEST DEMO</span>
-            </button>
-
-            <button className="pd-circle-btn" title="Platform">
-              <SteamIcon />
-            </button>
-            <button className="pd-circle-btn" title="Website">
-              <WebIcon />
-            </button>
-            <button
-              className="pd-pill-share-btn"
-              onClick={() => {
-                if (navigator.share) {
-                  navigator.share({ title: project.title, url: window.location.href });
-                }
-              }}
-            >
-              SHARE <ShareIcon />
-            </button>
-          </div>
+          <h1 className="pd-editorial-title">{project.caseTitle || project.title}</h1>
+          <p className="pd-editorial-summary">{project.summary}</p>
         </div>
 
-        {/* Video / Showcase Stage */}
+        {/* Video Canvas Stage */}
         {project.videoPlaylist ? (
-          <div className="pd-vertical-video-feed">
-            <h2 className="pd-section-heading">GAMEPLAY MECHANICS CLIPS STREAM</h2>
-            <p className="pd-feed-subtitle">
-              All 13 modular kinematic movement and gameplay interaction clips rendered sequentially.
-            </p>
-
-            <div className="pd-video-stack">
+          <div className="pd-mechanics-stream">
+            <h2 className="pd-section-title">Gameplay Mechanics Clips</h2>
+            <div className="pd-mechanics-grid">
               {project.videoPlaylist.map((clip, idx) => (
-                <div key={idx} className="pd-stacked-video-card">
-                  <div className="pd-video-card-topbar">
-                    <span className="pd-video-num-badge">VIDEO CLIP #{idx + 1}</span>
-                    <span className="pd-video-title-text">{clip.title}</span>
+                <div key={idx} className="pd-mechanic-card">
+                  <div className="pd-mechanic-header">
+                    <span className="pd-mechanic-tag">SYSTEM 0{idx + 1}</span>
+                    <span className="pd-mechanic-label">{clip.title}</span>
                   </div>
-                  <div className="pd-stacked-video-wrapper">
-                    <video controls loop muted playsInline className="pd-stacked-video-element">
-                      <source src={clip.file} type="video/mp4" />
-                    </video>
-                  </div>
+                  <video controls loop muted playsInline className="pd-mechanic-video">
+                    <source src={clip.file} type="video/mp4" />
+                  </video>
                 </div>
               ))}
             </div>
           </div>
-        ) : (
-          <div className="pd-video-frame">
-            {project.youtubeId ? (
-              <div className="pd-embed-box">
-                <iframe
-                  src={`https://www.youtube.com/embed/${project.youtubeId}?autoplay=1&rel=0`}
-                  title={project.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+        ) : !is3DModels ? (
+          <div className="custom-cinematic-player-wrap" ref={ytContainerRef}>
+            {!videoLoaded && (
+              <div className="player-loading-skeleton">
+                <div className="skeleton-grid-scan"></div>
+                <div className="skeleton-status-box">
+                  <div className="scanner-line"></div>
+                  <span className="skeleton-text">Loading level walkthrough...</span>
+                  <span className="skeleton-sub">1080p · Metric validation</span>
+                </div>
               </div>
-            ) : project.videoFile ? (
-              <video autoPlay loop controls className="pd-video-element">
-                <source src={project.videoFile} type="video/mp4" />
-              </video>
-            ) : (
-              <img src={project.thumbnail} alt={project.title} className="pd-image-element" />
             )}
-          </div>
-        )}
 
-        {/* Section 1 */}
-        <section className="pd-content-section">
-          <h2 className="pd-section-heading">
-            {project.section1Title || 'WORKING TOWARDS THE RELEASE'}
-          </h2>
-          <p className="pd-section-paragraph">{project.section1Para}</p>
-
-          <ul className="pd-bullet-points">
-            {project.highlights?.map((item, idx) => (
-              <li key={idx}>{item}</li>
-            ))}
-          </ul>
-        </section>
-
-        {/* 3D Models Breakdown */}
-        {project.modelsList && (
-          <section id="pd-models-breakdown" className="pd-models-breakdown-section">
-            <div className="pd-section-title-tag-row">
-              <span className="pd-tag-pill-yellow">6 UNIQUE 3D MODELS</span>
-              <h2 className="pd-section-heading">FEATURED ASSETS BREAKDOWN</h2>
-            </div>
-            <p className="pd-models-lead-text">
-              Click on any asset thumbnail below to open the fullscreen 3D model inspection panel.
-            </p>
-
-            <div className="pd-models-grid">
-              {project.modelsList.map((m, idx) => (
-                <div key={idx} className="pd-model-card">
-                  <div className="pd-model-card-header">
-                    <span className="pd-model-number-tag">MODEL #{idx + 1}</span>
-                    <h3 className="pd-model-title">{m.name}</h3>
-                  </div>
-                  <p className="pd-model-desc">{m.desc}</p>
-
-                  <div className="pd-model-thumbs">
-                    {m.video && (
-                      <div
-                        className="pd-thumb-clickable-box"
-                        onClick={() => openModelPreview(m, 0)}
-                        title="Click to inspect model turntable video"
-                      >
-                        <video autoPlay loop muted playsInline className="pd-model-thumb-media">
-                          <source src={m.video} type="video/mp4" />
-                        </video>
-                        <div className="pd-thumb-zoom-badge">🔍 VIEW</div>
-                      </div>
-                    )}
-                    {m.images?.map((imgSrc, imgIdx) => {
-                      const startIndex = m.video ? imgIdx + 1 : imgIdx;
-                      return (
-                        <div
-                          key={imgIdx}
-                          className="pd-thumb-clickable-box"
-                          onClick={() => openModelPreview(m, startIndex)}
-                          title={`Click to inspect ${m.name} shot ${imgIdx + 1}`}
-                        >
-                          <img
-                            src={imgSrc}
-                            alt={`${m.name} screenshot ${imgIdx + 1}`}
-                            className="pd-model-thumb-media"
-                          />
-                          <div className="pd-thumb-zoom-badge">🔍 VIEW</div>
-                        </div>
-                      );
-                    })}
-                  </div>
+            <div className="custom-media-frame">
+              {project.youtubeId ? (
+                <div className="custom-yt-crop">
+                  <div id={`custom-yt-${project.youtubeId}`} className="yt-iframe-fill" />
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Gallery Slider (Level Design & UI) */}
-        {galleryImages.length > 0 && !project.modelsList && !project.videoPlaylist && (
-          <section className="pd-slider-section">
-            <div className="pd-slider-wrapper">
-              <img
-                src={galleryImages[currentSlide]}
-                alt={`Screenshot ${currentSlide + 1}`}
-                className="pd-slider-image"
-              />
-
-              {galleryImages.length > 1 && (
-                <>
-                  <button className="pd-arrow pd-arrow-prev" onClick={handlePrevSlide}>
-                    ❮
-                  </button>
-                  <button className="pd-arrow pd-arrow-next" onClick={handleNextSlide}>
-                    ❯
-                  </button>
-                  <div className="pd-counter-badge">
-                    {currentSlide + 1} / {galleryImages.length}
-                  </div>
-                </>
-              )}
-            </div>
-            <p className="pd-slider-caption">
-              SCREENSHOT {currentSlide + 1} OF {galleryImages.length}
-            </p>
-          </section>
-        )}
-
-        {/* Section 2 */}
-        <section className="pd-content-section">
-          <h2 className="pd-section-heading">
-            {project.section2Title || 'METRICS & ITERATION'}
-          </h2>
-          <p className="pd-section-paragraph">{project.section2Para}</p>
-        </section>
-
-        {/* Special Thanks */}
-        <section className="pd-content-section pd-thanks-section">
-          <h2 className="pd-section-heading">SPECIAL THANKS</h2>
-          <p className="pd-section-paragraph">
-            Special thanks to mentors, collaborators, and players testing builds and providing feedback.
-          </p>
-
-          {project.itchUrl && (
-            <div className="pd-itch-row">
-              <a href={project.itchUrl} target="_blank" rel="noreferrer" className="pd-itch-button">
-                PLAY SHIPPED BUILD ON ITCH.IO 🠚
-              </a>
-            </div>
-          )}
-        </section>
-      </main>
-
-      {/* =========================================================
-          FULLSCREEN 3D MODEL INSPECTION PANEL MODAL
-          ========================================================= */}
-      {previewModal && (
-        <div className="model-inspect-backdrop" onClick={() => setPreviewModal(null)}>
-          <div className="model-inspect-card" onClick={(e) => e.stopPropagation()}>
-            <div className="model-inspect-topbar">
-              <div className="model-inspect-title-group">
-                <span className="model-inspect-badge">MODEL INSPECTION VIEW</span>
-                <h3 className="model-inspect-heading">{previewModal.modelName}</h3>
-                <p className="model-inspect-desc">{previewModal.desc}</p>
-              </div>
-              <button
-                className="model-inspect-close-btn"
-                onClick={() => setPreviewModal(null)}
-                title="Close Preview (Esc)"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="model-inspect-stage">
-              {previewModal.items[previewModal.currentIndex]?.type === 'video' ? (
-                <video autoPlay loop controls className="model-inspect-media">
-                  <source
-                    src={previewModal.items[previewModal.currentIndex].src}
-                    type="video/mp4"
-                  />
+              ) : project.videoFile ? (
+                <video
+                  ref={nativeVideoRef}
+                  playsInline
+                  onTimeUpdate={handleNativeTimeUpdate}
+                  onLoadedMetadata={handleNativeLoadedMetadata}
+                  onCanPlay={() => setVideoLoaded(true)}
+                  onWaiting={() => setVideoLoaded(false)}
+                  onEnded={() => setIsPlaying(false)}
+                  className="native-stream-video"
+                >
+                  <source src={project.videoFile} type="video/mp4" />
                 </video>
               ) : (
                 <img
-                  src={previewModal.items[previewModal.currentIndex]?.src}
-                  alt={previewModal.modelName}
-                  className="model-inspect-media"
+                  src={project.thumbnail}
+                  alt={project.title}
+                  onLoad={() => setVideoLoaded(true)}
+                  className="fallback-static-img"
                 />
-              )}
-
-              {previewModal.items.length > 1 && (
-                <>
-                  <button
-                    className="model-inspect-arrow model-inspect-arrow-prev"
-                    onClick={handlePrevPreview}
-                    title="Previous Shot"
-                  >
-                    ❮
-                  </button>
-                  <button
-                    className="model-inspect-arrow model-inspect-arrow-next"
-                    onClick={handleNextPreview}
-                    title="Next Shot"
-                  >
-                    ❯
-                  </button>
-                  <div className="model-inspect-counter">
-                    {previewModal.currentIndex + 1} / {previewModal.items.length}
-                  </div>
-                </>
               )}
             </div>
 
-            {previewModal.items.length > 1 && (
-              <div className="model-inspect-thumb-strip">
-                {previewModal.items.map((item, idx) => (
-                  <button
-                    key={idx}
-                    className={`model-inspect-thumb-btn ${previewModal.currentIndex === idx ? 'active' : ''}`}
-                    onClick={() => setPreviewModal({ ...previewModal, currentIndex: idx })}
-                  >
-                    {item.type === 'video' ? (
-                      <span className="thumb-video-icon">▶ VID</span>
-                    ) : (
-                      <img src={item.src} alt="thumb" className="thumb-strip-img" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+            {/* Custom SVG Controls Bar */}
+            <div className="inbuilt-player-controls-bar">
+              <button type="button" className="inbuilt-btn" onClick={togglePlay} title={isPlaying ? 'Pause' : 'Play'}>
+                {isPlaying ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16" />
+                    <rect x="14" y="4" width="4" height="16" />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                )}
+              </button>
 
-      {/* Demo Request Modal */}
-      {showDemoModal && (
-        <div className="demo-modal-backdrop" onClick={() => setShowDemoModal(false)}>
-          <div className="demo-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="demo-modal-top">
-              <div className="demo-modal-title-box">
-                <span className="demo-modal-chip">LEVEL DESIGN EVALUATION</span>
-                <h3 className="demo-modal-heading">REQUEST PLAYABLE BUILD</h3>
-                <p className="demo-modal-sub">
-                  Target Project: <strong>{project.title}</strong>
-                </p>
+              <div className="inbuilt-scrub-timeline" onClick={handleSeek}>
+                <div className="inbuilt-scrub-track">
+                  <div className="inbuilt-scrub-progress" style={{ width: `${progress}%` }}>
+                    <span className="scrub-playhead"></span>
+                  </div>
+                </div>
               </div>
-              <button
-                className="demo-modal-close"
-                onClick={() => setShowDemoModal(false)}
-                aria-label="Close"
+
+              <div className="inbuilt-timestamp">
+                <span>{currentTimeFormatted}</span>
+                <span className="time-sep">/</span>
+                <span>{durationFormatted}</span>
+              </div>
+
+              <div
+                className="inbuilt-volume-cluster"
+                onMouseEnter={() => setShowVolumeSlider(true)}
+                onMouseLeave={() => setShowVolumeSlider(false)}
               >
-                ✕
+                <button type="button" className="inbuilt-btn volume-btn" onClick={toggleMute} title="Volume">
+                  {isMuted || volume === 0 ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <line x1="23" y1="9" x2="17" y2="15" />
+                      <line x1="17" y1="9" x2="23" y2="15" />
+                    </svg>
+                  ) : volume < 0.5 ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    </svg>
+                  )}
+                </button>
+
+                <div className={`volume-slider-popup ${showVolumeSlider ? 'is-open' : ''}`}>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={isMuted ? 0 : volume}
+                    onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                    className="custom-volume-range"
+                  />
+                </div>
+              </div>
+
+              <button type="button" className="inbuilt-btn" onClick={toggleFullscreen} title="Fullscreen">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                </svg>
               </button>
             </div>
+          </div>
+        ) : null}
 
-            <form className="demo-modal-form" onSubmit={handleFormSubmit}>
-              <div className="demo-form-group">
-                <label className="demo-label">RECIPIENT</label>
-                <input
-                  type="text"
-                  value="cj3243850@gmail.com (Chetan Joshi)"
-                  readOnly
-                  className="demo-input demo-input-readonly"
-                />
-              </div>
+        {/* =========================================================
+            SECTION 01: MY TECHNICAL ROLE & BREAKDOWN
+            ========================================================= */}
+        <section className="pd-narrative-section">
+          <h2 className="pd-section-title">01 / My Role & Implementation</h2>
+          <p className="pd-section-para">
+            {is3DModels ? (
+              <>
+                In this <strong>3D hard-surface asset pipeline</strong> I modelled six game-ready props in Blender. The work was built on non-destructive booleans, bevel chamfers and weighted normals, so each prop holds a crisp look in-engine without shading artefacts.
+              </>
+            ) : isTengent ? (
+              <>
+                On <strong>TenGent Parkour</strong> I worked as lead developer and level designer. I wrote the Unity C# movement controller, using downward raycasts to remove bounce and collision jitter, and designed seven obstacle courses paced around continuous speed and wall-running rhythm.
+              </>
+            ) : isDevilsLegacy ? (
+              <>
+                For <strong>Devil's Legacy</strong> I designed the blockout of <em>The Final Dream Maze</em>. The core of the work was a central pillar rotunda that deliberately disorients the player, plus 90-degree corridor turns that cut the monster's line of sight and build panic alongside the audio triggers.
+              </>
+            ) : isCitadel ? (
+              <>
+                For the <strong>Citadel blockout</strong> I built a fortress combat environment in Unity ProBuilder. The layout relies on elevated ramparts and archer sightlines, balanced by portcullis choke points so spawns can't be camped.
+              </>
+            ) : isStarsFall ? (
+              <>
+                For <strong>As The Stars Fall</strong> I blockouted an overgrown city street grid for a narrative adventure. Streets and alleys were scaled to a 100 cm character, with strict zero n-gon facade topology and landmark spires for orientation.
+              </>
+            ) : isUrbanShowcase ? (
+              <>
+                For the <strong>Urban Area Showcase</strong> I blockouted modular streets and building facade kits in Blender and Unity. Streets were scaled to traversal speed and I ran real-time lighting passes across the layout.
+              </>
+            ) : (
+              project.section1Para || project.summary
+            )}
+          </p>
 
-              <div className="demo-form-row">
-                <div className="demo-form-group">
-                  <label className="demo-label">
-                    YOUR NAME <span className="req-star">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="e.g. Lead Level Designer / Recruiter"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="demo-input"
-                    required
-                  />
+          {/* ACCURATE METRICS */}
+          <div className="pd-metric-cards-grid">
+            {is3DModels ? (
+              <>
+              </>
+            ) : isTengent ? (
+              <>
+              </>
+            ) : isDevilsLegacy ? (
+              <>
+              </>
+            ) : isCitadel ? (
+              <>
+              </>
+            ) : isStarsFall ? (
+              <>
+              </>
+            ) : (
+              <>
+              </>
+            )}
+          </div>
+        </section>
+
+        {/* =========================================================
+            SECTION 02: 3D HARD-SURFACE ASSET BREAKDOWN (IF 3D SUITE)
+            ========================================================= */}
+        {is3DModels && project.modelsList && (
+          <section className="pd-narrative-section">
+            <h2 className="pd-section-title">02 / 3D Hard-Surface Assets</h2>
+            <div className="pd-models-breakdown-grid">
+              {project.modelsList.map((m, idx) => (
+                <div key={idx} className="pd-model-item-card">
+                  <div className="pd-model-info-bar">
+                    <span className="pd-model-badge">MODEL 0{idx + 1}</span>
+                    <h3 className="pd-model-name">{m.name}</h3>
+                  </div>
+                  {m.specs && <span className="pd-model-specs-tag">{m.specs}</span>}
+                  <p className="pd-model-description">{m.desc}</p>
+                  <div className="pd-model-thumbs-row">
+                    {m.video && (
+                      <div
+                        className="pd-model-thumb-box"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setPreviewMedia({ type: 'video', src: m.video, name: m.name })}
+                      >
+                        <video autoPlay loop muted playsInline>
+                          <source src={m.video} type="video/mp4" />
+                        </video>
+                        <span className="pd-thumb-overlay">PLAY</span>
+                      </div>
+                    )}
+                    {m.images?.map((img, i) => (
+                      <div
+                        key={i}
+                        className="pd-model-thumb-box"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setPreviewMedia({ type: 'image', src: img, name: m.name })}
+                      >
+                        <img src={img} alt={m.name} />
+                        <span className="pd-thumb-overlay">VIEW</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="demo-form-group">
-                  <label className="demo-label">
-                    YOUR EMAIL <span className="req-star">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="contact@studio.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="demo-input"
-                    required
-                  />
-                </div>
-              </div>
+              ))}
+            </div>
+          </section>
+        )}
 
-              <div className="demo-form-group">
-                <label className="demo-label">STUDIO / COMPANY (OPTIONAL)</label>
-                <input
-                  type="text"
-                  name="organization"
-                  placeholder="e.g. Indie Studio / Freelance Collective"
-                  value={formData.organization}
-                  onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
-                  className="demo-input"
-                />
+        {/* Greybox Slider (Levels Only) */}
+        {!is3DModels && galleryImages.length > 1 && !project.videoPlaylist && (
+          <section className="pd-narrative-section">
+            <h2 className="pd-section-title">02 / Greybox Evolution & Sightlines</h2>
+            <div className="pd-slider-box">
+              <img src={galleryImages[currentSlide]} alt="Gallery Slide" />
+              <button
+                type="button"
+                className="pd-slide-arrow left"
+                onClick={() => setCurrentSlide((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1))}
+              >
+                ❮
+              </button>
+              <button
+                type="button"
+                className="pd-slide-arrow right"
+                onClick={() => setCurrentSlide((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1))}
+              >
+                ❯
+              </button>
+              <div className="pd-slide-counter">
+                {currentSlide + 1} / {galleryImages.length}
               </div>
+            </div>
+          </section>
+        )}
 
-              <div className="demo-form-group">
-                <label className="demo-label">SUBJECT</label>
-                <input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="demo-input"
-                  required
-                />
-              </div>
+        {/* =========================================================
+            SECTION 03: ACTIONS & VERIFIED TARGETS (LINK OR REQUEST PANEL)
+            ========================================================= */}
+        <section className="pd-narrative-section">
+          <h2 className="pd-section-title">03 / Project Access</h2>
+          <p className="pd-section-para">
+            {is3DModels
+              ? "All six models were built in Blender and checked against a production pipeline. High-poly .blend sources, low-poly OBJ/FBX hulls and 4K PBR maps are available on request."
+              : isTengent
+              ? "The playable beta is live on itch.io, with all seven courses, wall-running and momentum carry implemented."
+              : isUrbanShowcase
+              ? "The modular street environment is live on itch.io, showing real-time scale and environment lighting."
+              : isCitadel
+              ? "The fortress blockout is live on itch.io, showing the archer perimeters and courtyard pacing."
+              : isStarsFall
+              ? "Greybox passes and a playable evaluation build for As The Stars Fall are available on request."
+              : isDevilsLegacy
+              ? "A prototype build of The Final Dream Maze is available on request for level design evaluation."
+              : "Source files, greybox passes and documentation are available on request."}
+          </p>
 
-              <div className="demo-form-group">
-                <label className="demo-label">
-                  MESSAGE INTENT <span className="req-star">*</span>
-                </label>
-                <textarea
-                  name="message"
-                  rows="5"
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="demo-textarea"
-                  required
-                ></textarea>
-              </div>
+          <div className="pd-action-cluster">
+            {/* 1. TENGENT PARKOUR: ITCH.IO */}
+            {isTengent ? (
+              <a
+                href="https://theroneleaf-games.itch.io/tg-parkour"
+                target="_blank"
+                rel="noreferrer"
+                className="editorial-cta-pill primary"
+              >
+                <span>Play TenGent Parkour on itch.io</span>
+                <span className="cta-arrow">➔</span>
+              </a>
+            ) : /* 2. URBAN SHOWCASE: ITCH.IO */
+            isUrbanShowcase ? (
+              <a
+                href="https://theroneleaf-games.itch.io/urban-showcaselevel-art"
+                target="_blank"
+                rel="noreferrer"
+                className="editorial-cta-pill primary"
+              >
+                <span>View Urban Showcase on itch.io</span>
+                <span className="cta-arrow">➔</span>
+              </a>
+            ) : /* 3. CITADEL BLOCKOUT: ITCH.IO */
+            isCitadel ? (
+              <a
+                href="https://theroneleaf-games.itch.io/citadel-blockout"
+                target="_blank"
+                rel="noreferrer"
+                className="editorial-cta-pill primary"
+              >
+                <span>View Citadel Blockout on itch.io</span>
+                <span className="cta-arrow">➔</span>
+              </a>
+            ) : /* 4. AS THE STARS FALL: REQUEST PANEL */
+            isStarsFall ? (
+              <button
+                type="button"
+                className="editorial-cta-pill primary"
+                onClick={(e) => handleBuildRequest(e, 'Build Access Request: As The Stars Fall')}
+              >
+                <span>Request build access ➔</span>
+              </button>
+            ) : /* 5. DEVIL'S LEGACY: REQUEST PANEL */
+            isDevilsLegacy ? (
+              <button
+                type="button"
+                className="editorial-cta-pill primary"
+                onClick={(e) => handleBuildRequest(e, "Playable Build Request: Devil's Legacy")}
+              >
+                <span>Request playable build ➔</span>
+              </button>
+            ) : /* 6. 3D MODELS: REQUEST PANEL */
+            is3DModels ? (
+              <button
+                type="button"
+                className="editorial-cta-pill primary"
+                onClick={(e) => handleBuildRequest(e, '3D Asset Source Files Request')}
+              >
+                <span>Request 3D source files (.blend / FBX) ➔</span>
+              </button>
+            ) : (
+              /* GENERAL FALLBACK: REQUEST PANEL */
+              <button
+                type="button"
+                className="editorial-cta-pill primary"
+                onClick={(e) => handleBuildRequest(e, `Evaluation Request: ${project.title}`)}
+              >
+                <span>Request project files ➔</span>
+              </button>
+            )}
+          </div>
+        </section>
+      </main>
 
-              {submitStatus && (
-                <div className={`demo-status-banner ${submitStatus.success ? 'success' : 'error'}`}>
-                  {submitStatus.text}
-                </div>
+      {/* Lightbox Modal */}
+      {previewMedia && (
+        <div className="pd-lightbox-backdrop" onClick={() => setPreviewMedia(null)}>
+          <div className="pd-lightbox-card" onClick={(e) => e.stopPropagation()}>
+            <div className="pd-lightbox-top">
+              <span className="pd-lightbox-title">{previewMedia.name}</span>
+              <button type="button" className="pd-close-btn" onClick={() => setPreviewMedia(null)}>✕</button>
+            </div>
+            <div className="pd-lightbox-media-wrap">
+              {previewMedia.type === 'video' ? (
+                <video autoPlay loop controls className="pd-lightbox-full">
+                  <source src={previewMedia.src} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={previewMedia.src} alt="Full preview" className="pd-lightbox-full" />
               )}
-
-              <div className="demo-modal-actions">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="demo-send-btn"
-                >
-                  {isSubmitting ? 'DISPATCHING...' : 'DISPATCH REQUEST ➔'}
-                </button>
-                <span className="demo-action-note">
-                  Direct dispatch to Chetan Joshi via Web3Forms API
-                </span>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

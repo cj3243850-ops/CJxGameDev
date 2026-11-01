@@ -1,133 +1,202 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Lenis from 'lenis';
 import './App.css';
-import SplashScreen from './components/SplashScreen';
+import Header from './components/Header';
+import Mid from './components/Mid';
+import Footer from './components/Footer';
 import ProjectDetail from './components/ProjectDetail';
-import ResumeModal from './components/ResumeModal';
-import Home from './pages/Home';
-import Projects from './pages/Projects';
-import About from './pages/About';
-import { trackVisitor } from './utils/visitorTracker';
+import ContactModal from './components/ContactModal';
+import SplashScreen from './components/SplashScreen';
+import { initVisitorTracker } from './utils/visitorTracker';
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
-  const [activeTab, setActiveTab] = useState('home');
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [showResumeModal, setShowResumeModal] = useState(false);
+  const videoRef = useRef(null);
+  const stageLayerRef = useRef(null);
+  const backdropLayerRef = useRef(null);
+  const lenisRef = useRef(null);
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isHireModalOpen, setIsHireModalOpen] = useState(false);
+  const [modalSubject, setModalSubject] = useState('');
+
+  // 1. Standard Fluid Responsive Viewport (Mobile + Desktop automatic)
   useEffect(() => {
-    trackVisitor();
+    let metaTag = document.querySelector('meta[name="viewport"]');
+    if (!metaTag) {
+      metaTag = document.createElement('meta');
+      metaTag.name = 'viewport';
+      document.head.appendChild(metaTag);
+    }
+    metaTag.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0');
   }, []);
 
-  const handleNavigate = (tab) => {
-    setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // 2. Silent Visitor Tracker
+  useEffect(() => {
+    initVisitorTracker();
+  }, []);
+
+  const handleOpenContact = (subjectText = '') => {
+    setModalSubject(subjectText || 'General Collaboration / Evaluation Request');
+    setIsHireModalOpen(true);
   };
 
+  // 3. Lenis Scroll Freeze jab modal ya splash active ho
+  useEffect(() => {
+    if (isLoading || selectedProject || isHireModalOpen) {
+      if (lenisRef.current) lenisRef.current.stop();
+    } else {
+      if (lenisRef.current) lenisRef.current.start();
+    }
+  }, [isLoading, selectedProject, isHireModalOpen]);
+
+  // 4. Smooth Lenis Engine & 3D Video Scrubbing
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+
+    const lenis = new Lenis({
+      duration: isMobile ? 1.2 : 1.8,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: isMobile ? 0.9 : 0.65,
+      touchMultiplier: 1.2,
+    });
+
+    lenisRef.current = lenis;
+
+    const video = videoRef.current;
+    const stageLayer = stageLayerRef.current;
+    const backdropLayer = backdropLayerRef.current;
+
+    let targetProgress = 0;
+    let renderedProgress = 0;
+
+    lenis.on('scroll', (e) => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll > 0) {
+        targetProgress = Math.max(0, Math.min(1, e.scroll / maxScroll));
+      }
+    });
+
+    if (video) {
+      video.pause();
+      video.currentTime = 0.001;
+    }
+
+    const revealElements = document.querySelectorAll('.reveal-on-scroll');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-inview');
+          } else {
+            entry.target.classList.remove('is-inview');
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -5% 0px' }
+    );
+    revealElements.forEach((el) => observer.observe(el));
+
+    let rafId = null;
+
+    const animateLoop = (time) => {
+      lenis.raf(time);
+
+      const delta = targetProgress - renderedProgress;
+      if (Math.abs(delta) < 0.0001) {
+        renderedProgress = targetProgress;
+      } else {
+        renderedProgress += delta * 0.045;
+      }
+
+      if (video && video.readyState >= 2 && video.duration) {
+        const totalDuration = video.duration;
+        const calculatedTime = renderedProgress * (totalDuration - 0.04);
+        const safeTime = Math.max(0.001, Math.min(totalDuration - 0.03, calculatedTime));
+
+        if (!video.seeking && Math.abs(video.currentTime - safeTime) > 0.008) {
+          video.currentTime = safeTime;
+        }
+      }
+
+      if (stageLayer) {
+        const subtleZoom = 1.01 + renderedProgress * 0.025;
+        stageLayer.style.transform = `scale(${subtleZoom.toFixed(4)}) translateZ(0)`;
+      }
+
+      if (backdropLayer) {
+        const shadowDepth = 0.2 + renderedProgress * 0.4;
+        backdropLayer.style.opacity = shadowDepth.toFixed(2);
+      }
+
+      rafId = requestAnimationFrame(animateLoop);
+    };
+
+    rafId = requestAnimationFrame(animateLoop);
+
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
+
   return (
-    <div className="portfolio-app">
-      {/* 1. Splash Screen */}
-      {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
+    <div className="portfolio-cinematic-root">
+      {/* Splash Screen Preloader */}
+      {isLoading && (
+        <SplashScreen
+          videoRef={videoRef}
+          onLoaded={() => setIsLoading(false)}
+        />
+      )}
 
-      {/* 2. Left Side Vertical Watermark Rail */}
-      <div className="vertical-watermark-rail">
-        <div className="vertical-watermark-text">
-          {activeTab.toUpperCase()} — LEVEL DESIGN — CJxGAMEDEV — PORTFOLIO —
-        </div>
-      </div>
+      {/* Persistent 3D Canvas Layer */}
+      <div className="layer-persistent-stage" aria-hidden="true">
+        <div className="layer-studio-backdrop" ref={backdropLayerRef} />
 
-      {/* 3. Top Navigation */}
-      <nav className="top-nav">
-        <div className="nav-brand" onClick={() => handleNavigate('home')}>
-          <img src="/Data/CJ_cPPP4.png" alt="CJ Logo" className="brand-logo" />
-        </div>
-
-        <div className="nav-links">
-          <button
-            className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`}
-            onClick={() => handleNavigate('home')}
-          >
-            HOME
-          </button>
-          <button
-            className={`nav-btn ${activeTab === 'projects' ? 'active' : ''}`}
-            onClick={() => handleNavigate('projects')}
-          >
-            PROJECTS
-          </button>
-          <button
-            className={`nav-btn ${activeTab === 'about' ? 'active' : ''}`}
-            onClick={() => handleNavigate('about')}
-          >
-            ABOUT ME
-          </button>
-        </div>
-
-        <div className="nav-actions">
-          {/* Dashboard / Navbar Resume Button */}
-          <button
-            className="resume-btn"
-            onClick={() => setShowResumeModal(true)}
-            title="Open Interactive Resume"
-          >
-            MY RESUME 🗎
-          </button>
-          <a
-            href="https://www.linkedin.com/in/chetan-joshi-50922a2a4/"
-            target="_blank"
-            rel="noreferrer"
-            className="social-icon"
-            title="LinkedIn"
-          >
-            in
-          </a>
-          <a
-            href="https://www.youtube.com/@CjxGameDev"
-            target="_blank"
-            rel="noreferrer"
-            className="social-icon"
-            title="YouTube"
-          >
-            ▶
-          </a>
-        </div>
-      </nav>
-
-      {/* 4. Page Viewport */}
-      <div className="main-viewport">
-        {activeTab === 'home' && (
-          <Home
-            onSelectProject={(proj) => setSelectedProject(proj)}
-            onNavigate={handleNavigate}
-            onOpenResume={() => setShowResumeModal(true)}
+        <div className="layer-3d-viewport" ref={stageLayerRef}>
+          <video
+            ref={videoRef}
+            className="persistent-stage-video"
+            src="/Data/background_scroll.mp4"
+            muted
+            playsInline
+            preload="auto"
           />
-        )}
-        {activeTab === 'projects' && (
-          <Projects onSelectProject={(proj) => setSelectedProject(proj)} />
-        )}
-        {activeTab === 'about' && (
-          <About onOpenResume={() => setShowResumeModal(true)} />
-        )}
+        </div>
+
+        <div className="layer-studio-vignette" />
       </div>
 
-      {/* 5. Footer */}
-      <footer className="site-footer">
-        <p>© 2026 CHETAN JOSHI — CJxGameDev Portfolio</p>
-      </footer>
+      {/* Main Foreground Interactive Content */}
+      <div className="layer-scroll-content">
+        <Header onOpenHireModal={() => handleOpenContact('Direct Contract Inquiry')} />
 
-      {/* 6. Modular Project Detail Modal */}
+        <Mid
+          onSelectProject={(proj) => setSelectedProject(proj)}
+          onRequestBuild={(title) => handleOpenContact(`Build Access Request: ${title}`)}
+        />
+
+        <Footer onOpenHireModal={() => handleOpenContact('Direct Collaboration Request')} />
+      </div>
+
+      {/* Project Detail Modal */}
       {selectedProject && (
         <ProjectDetail
           project={selectedProject}
           onClose={() => setSelectedProject(null)}
-          onNavigate={handleNavigate}
-          onOpenResume={() => setShowResumeModal(true)}
+          onRequestBuild={(title) => handleOpenContact(`Project File Request: ${title}`)}
         />
       )}
 
-      {/* 7. Fullscreen Interactive Resume Panel */}
-      <ResumeModal
-        isOpen={showResumeModal}
-        onClose={() => setShowResumeModal(false)}
+      {/* Contact Modal */}
+      <ContactModal
+        isOpen={isHireModalOpen}
+        initialSubject={modalSubject}
+        onClose={() => setIsHireModalOpen(false)}
       />
     </div>
   );

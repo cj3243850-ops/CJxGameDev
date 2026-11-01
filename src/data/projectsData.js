@@ -6,129 +6,129 @@ export const projectsData = [
     id: 'devils-legacy',
     category: 'LEVEL DESIGN',
     title: "Devil's Legacy",
-    caseTitle: "DEVIL'S LEGACY : THE FINAL DREAM MAZE",
+    caseTitle: "Devil's Legacy: The Final Dream Maze",
     subtitle: 'Horror Labyrinth Blockout',
-    badge: 'ACTIVE COLLAB',
+    badge: 'Active collaboration',
     engine: 'Unity',
     role: 'Level Designer',
     studio: 'DL-Core Indie Studio',
-    duration: '1 MONTH + ONGOING (2025 - PRESENT)',
+    duration: '1 month + ongoing (2025 – present)',
     youtubeId: 'ZBjVunuyMlU',
     thumbnail: 'https://img.youtube.com/vi/ZBjVunuyMlU/maxresdefault.jpg',
     thumbStyle: { objectPosition: 'center 20%', transform: 'scale(1.22)' },
     gallery: ['/Data/pf/41.png', '/Data/pf/42.png', '/Data/pf/43.png'],
     summary:
-      "Devil's Legacy is a psychological survival horror demo where tension and disorientation define the gameplay flow. Active level design collaborator with DL-Core Indie Studio, currently expanding greybox horror encounters and the climactic dream sequence chase layout.",
-    subtext: "Actively collaborating with DL-Core to craft sightline breaks, narrative triggers, and psychological dead-ends.",
-    section1Title: 'LABYRINTH PACING & DISORIENTATION DESIGN',
-    section1Para: 'The sequence begins inside a circular rotunda anchor before channeling the player into deceptive 90-degree corridors.',
+      "A psychological survival horror demo where tension and disorientation drive the pacing. I'm working with DL-Core Indie Studio on the greybox horror encounters and the final dream sequence chase layout.",
+    subtext: 'Working with DL-Core on sightline breaks, narrative triggers and dead ends.',
+    section1Title: 'Labyrinth pacing & disorientation',
+    section1Para: 'The sequence opens in a circular rotunda, then funnels the player into deceptive 90-degree corridors.',
     highlights: [
-      'Circular pillar rotunda serving as sequence focal anchor point.',
-      'Claustrophobic corridor network calibrated for demonic chase speed and tight turn radii.',
-      'Spatial routing aligned with the London Bridge music box audio trigger and fake staircase dead-end.',
-      'Dynamic occlusion culling and light bounce placement using low-poly greybox proxy meshes.'
+      'Circular pillar rotunda that anchors the sequence.',
+      'Tight corridor network sized to the chase speed and turn radius.',
+      'Routing built around the London Bridge music box trigger and a fake staircase dead end.',
+      'Low-poly proxy meshes for occlusion and light bounce.'
     ],
-    section2Title: 'ITERATION & TENSION BALANCING',
-    section2Para: 'Playtests showed players escaped too easily; introduced a false double-back hallway and increased pillar density.'
+    section2Title: 'Iteration & tension balancing',
+    section2Para: 'Playtests showed players escaping too easily, so I added a false double-back hallway and raised pillar density.'
   },
   {
     id: 'as-the-stars-fall',
     category: 'LEVEL DESIGN',
     title: 'As The Stars Fall',
-    caseTitle: 'AS THE STARS FALL : THE GREEN CITY URBAN LAYOUT',
+    caseTitle: 'As The Stars Fall: The Green City layout',
     subtitle: 'Urban Environment Blockout',
-    badge: 'ACTIVE COLLAB',
+    badge: 'Active collaboration',
     engine: 'Blender / Unity',
     role: 'Environment & Level Designer',
     studio: 'Indie Collective',
-    duration: 'ACTIVE COLLABORATION (2025 - PRESENT)',
+    duration: 'Ongoing (2025 – present)',
     youtubeId: 'jDYKchNn9Z4',
     thumbnail: 'https://img.youtube.com/vi/jDYKchNn9Z4/maxresdefault.jpg',
     thumbStyle: { objectPosition: 'left center', transform: 'scale(1.02)' },
     gallery: ['/Data/pf/51.png', '/Data/pf/52.png'],
     summary:
-      'As The Stars Fall is a narrative adventure set within an overgrown metropolis. Currently active as environment and level designer, building "The Green City" street grid with strict low-poly metrics, 0 N-gon topology, and unified texture atlas workflows.',
-    subtext: 'Ongoing design of urban exploration routes scaled for kid-sized character proportions (~100cm scale).',
-    section1Title: 'URBAN PROPORTIONS & NAVIGATION READABILITY',
-    section1Para: 'Curbs, doorways, and vehicle scaling are calibrated to feel imposing while ensuring fluid mantle and jump clearances.',
+      'A narrative adventure set in an overgrown metropolis. I work as environment and level designer on The Green City street grid, keeping low-poly metrics, zero n-gon topology and one shared texture atlas.',
+    subtext: 'Designing urban routes scaled to a roughly 100 cm character.',
+    section1Title: 'Urban scale & navigation',
+    section1Para: 'Curbs, doorways and vehicles are scaled to feel imposing while keeping mantle and jump clearances fluid.',
     highlights: [
-      'Street routes scaled specifically for ~100cm kid character movement controller.',
-      'Landmark anchors placed at sightline intersections (Subway, Pharmacy, Bookstore).',
-      'Unified 2K/4K texture atlas layout eliminating material overhead.',
-      'Modular building facades built with snap-to-grid metric discipline in Blender.'
+      'Streets scaled to a ~100 cm character controller.',
+      'Landmarks placed at sightline intersections: subway, pharmacy, bookstore.',
+      'Single 2K/4K texture atlas to cut material overhead.',
+      'Modular facades built on a grid in Blender.'
     ],
-    section2Title: 'VISUAL DENSITY VS READABILITY',
-    section2Para: 'Balanced street clutter to guide player routing naturally while keeping main thoroughfares unobstructed.'
+    section2Title: 'Density vs readability',
+    section2Para: 'Street clutter is balanced to guide routing without blocking the main thoroughfares.'
   },
   {
     id: 'tactical-arena',
     category: 'LEVEL DESIGN',
     title: 'Tactical 6v6 Arena',
-    caseTitle: 'TACTICAL 6v6 ARENA : COMPETITIVE FPS MAP LAYOUT',
+    caseTitle: 'Tactical 6v6 Arena: Competitive FPS layout',
     subtitle: 'Competitive FPS Map Blockout',
-    badge: '1-WEEK SPRINT',
+    badge: '1-week sprint',
     engine: 'Unreal Engine',
     role: 'Level Designer',
     studio: 'Solo Project',
-    duration: '1 WEEK SPRINT (2025)',
+    duration: '1-week sprint (2025)',
     youtubeId: '1w0CrGYUXGQ',
     thumbnail: 'https://img.youtube.com/vi/1w0CrGYUXGQ/maxresdefault.jpg',
     thumbStyle: { objectPosition: 'left center', transform: 'scale(0.94)' },
     gallery: ['/Data/pf/31.png', '/Data/pf/32.png', '/Data/pf/33.png', '/Data/pf/34.png', '/Data/pf/35.png'],
     summary:
-      'A competitive 6v6 Capture-The-Flag arena blockout designed solo in Unreal Engine within a rapid 1-week production sprint. Built around balanced lane timing, dual-tier verticality, and calculated cover staging.',
-    subtext: 'Authored symmetrical route times from team spawn bases to contested neutral objectives with zero uncounterable headglitches in 7 days.',
-    section1Title: 'THREE-LANE STRUCTURE & COVER FORMATION',
-    section1Para: 'Modified three-lane architecture with interconnected catwalks and modular container placements.',
+      'A competitive 6v6 CTF arena blockout built solo in Unreal Engine over one week, around balanced lane timing, two-tier verticality and staged cover.',
+    subtext: 'Symmetrical spawn-to-objective route times, with no headglitch angles that can\'t be countered.',
+    section1Title: 'Three-lane structure & cover',
+    section1Para: 'A modified three-lane layout with connected catwalks and modular container placement.',
     highlights: [
-      'Dual-base symmetrical routing with balanced sprint timings to neutral mid-lane.',
-      'Carefully staggered container placements eliminating excessive long-range sightlines.',
-      'Upper-tier catwalk perches balanced with vulnerable side-flank approach vectors.',
-      'Rapid 1-week blockout validation with in-engine greybox primitives.'
+      'Symmetrical bases with matched sprint timings to mid.',
+      'Staggered containers that break up long sightlines.',
+      'Upper catwalks balanced by exposed side flanks.',
+      'Greybox validation in-engine across one week.'
     ],
-    section2Title: 'COMBAT ENCOUNTER PACING',
-    section2Para: 'Mid-map crate staging prevents offensive lockdown traps, ensuring defending teams always have two viable escape routes.'
+    section2Title: 'Combat pacing',
+    section2Para: 'Mid-map crate staging stops attackers locking down a site, so defenders always have two exits.'
   },
   {
     id: 'probuilder-showcase',
     category: 'LEVEL DESIGN',
     title: 'Citadel Blockout',
-    caseTitle: 'CITADEL BLOCKOUT : PROBUILDER TO ENVIRONMENT ART',
-    subtitle: 'ProBuilder vs Environment Art',
-    badge: 'WORKFLOW',
+    caseTitle: 'Citadel Blockout: ProBuilder to environment art',
+    subtitle: 'ProBuilder to Environment Art',
+    badge: 'Workflow',
     engine: 'Unity',
     role: 'Level Designer',
     studio: 'Pipeline Showcase',
-    duration: '2 MONTHS (2025)',
+    duration: '2 months (2025)',
     youtubeId: 'AVkL5OWZ72Y',
     thumbnail: 'https://img.youtube.com/vi/AVkL5OWZ72Y/maxresdefault.jpg',
     thumbStyle: { objectPosition: 'left 25%', transform: 'scale(1.2)' },
     gallery: ['/Data/pf/11.png', '/Data/pf/12.png', '/Data/pf/13.png', '/Data/pf/14.png', '/Data/pf/15.png'],
     summary:
-      'An end-to-end level design pipeline demonstration showcasing rapid modular whitebox iteration in Unity ProBuilder transitioning into detailed medieval castle environment art.',
-    subtext: 'Analyzes how player navigation landmarks, verticality, and readability are preserved through final art passes.',
-    section1Title: 'GREYBOX PROTOTYPING & VOLUMETRIC SCALING',
-    section1Para: 'Constructed natively in-engine using ProBuilder primitives to validate fortress walls, towers, and drawbridges.',
+      'A full level design pipeline from fast modular whiteboxing in Unity ProBuilder through to finished medieval castle art.',
+    subtext: 'Looks at how landmarks, verticality and readability survive the art pass.',
+    section1Title: 'Greybox prototyping & scale',
+    section1Para: 'Built in-engine from ProBuilder primitives to test walls, towers and drawbridges.',
     highlights: [
-      'Multi-level fortress blockout created natively inside Unity via ProBuilder.',
-      'Verification of player flow readability before and after artistic dressing.',
-      'Strategic bridge and parapet choke points designed for defensive standoffs.',
-      'Sightline optimization preventing visual clutter from obstructing critical pathways.'
+      'Multi-level fortress blockout made in Unity with ProBuilder.',
+      'Player flow checked before and after dressing.',
+      'Bridge and parapet chokes built for defensive standoffs.',
+      'Sightlines kept clear of clutter.'
     ],
-    section2Title: 'ART INTEGRATION VERIFICATION',
-    section2Para: 'Showcased high-density environment meshes dressing whitebox hulls without breaking player mantle heights or collision hulls.'
+    section2Title: 'Art integration check',
+    section2Para: 'Dense environment meshes dress the whitebox without breaking mantle heights or collision.'
   },
   {
     id: 'transformation-breakdown',
     category: 'LEVEL DESIGN',
     title: 'Urban Transformation',
-    caseTitle: 'URBAN TRANSFORMATION : WHITEBOX TO FINAL CITYSCAPE',
+    caseTitle: 'Urban Transformation: Whitebox to final city',
     subtitle: 'Before & After Environment',
-    badge: 'ITERATION',
+    badge: 'Iteration',
     engine: 'Unity',
     role: 'Level Designer',
     studio: 'ThroneLeaf Games',
-    duration: '5 MONTHS (2025 - 2026)',
+    duration: '5 months (2025 – 2026)',
     youtubeId: 'PzTLNUuptOg',
     thumbnail: 'https://img.youtube.com/vi/PzTLNUuptOg/maxresdefault.jpg',
     thumbStyle: { objectPosition: '18% center', transform: 'scale(1.05)' },
@@ -137,18 +137,18 @@ export const projectsData = [
       '/Data/pf/25.png', '/Data/pf/26.png', '/Data/pf/27.png', '/Data/pf/28.png'
     ],
     summary:
-      'A side-by-side run breakdown illustrating how initial whitebox geometry transforms into a stylized nighttime metropolitan streetscape without compromising gameplay flow.',
-    subtext: 'Demonstrates metric testing, route pacing, and atmospheric street dressing with dynamic lighting cues.',
-    section1Title: 'RUN-THROUGH READABILITY & HEIGHT PROGRESSION',
-    section1Para: 'Planned high-speed traversal lines along rooftops and alleys, calibrating ramps and fire escapes for fluid momentum.',
+      'A side-by-side breakdown of whitebox geometry becoming a stylized night-time street, with the gameplay flow kept intact.',
+    subtext: 'Covers metric testing, route pacing and lighting that guides the eye.',
+    section1Title: 'Run-through readability & height',
+    section1Para: 'High-speed lines were planned along rooftops and alleys, with ramps and fire escapes sized for momentum.',
     highlights: [
-      'Side-by-side comparison of obstacles, wall-run surfaces, and gap timings.',
-      'Neon and street-lamp lighting cues placed to naturally attract player eye gaze.',
-      'Multi-lane urban cross-sections designed with clear visual hierarchy.',
-      'Seamless transition from raw primitive whiteboxes to detailed stylized architecture.'
+      'Side-by-side comparison of obstacles, wall-run surfaces and gap timings.',
+      'Neon and street lighting placed to pull the player\'s eye.',
+      'Multi-lane cross-sections with a clear hierarchy.',
+      'Primitive whiteboxes carried through to stylized architecture.'
     ],
-    section2Title: 'DYNAMIC LIGHTING AS GUIDING SIGNS',
-    section2Para: 'Contrasted warm interior illumination against cool street alleys to highlight branching escape paths.'
+    section2Title: 'Lighting as a guide',
+    section2Para: 'Warm interior light sits against cool alleys to mark the escape branches.'
   },
 
   // ==========================================
@@ -158,13 +158,13 @@ export const projectsData = [
     id: 'tengen-parkour',
     category: 'SHIPPED GAMES',
     title: 'TenGen Parkour',
-    caseTitle: 'TENGEN PARKOUR : KINEMATIC MOVEMENT & GAUNTLET LEVELS',
+    caseTitle: 'TenGen Parkour: Movement controller & gauntlets',
     subtitle: 'High-Speed Movement Platformer',
-    badge: 'RELEASED GAME',
+    badge: 'Released game',
     engine: 'Unity C#',
     role: 'Lead Dev & Level Designer',
     studio: 'ThroneLeaf Games',
-    duration: '8 MONTHS (2025 - 2026)',
+    duration: '8 months (2025 – 2026)',
     thumbnail: '/Data/13.png',
     thumbStyle: { objectPosition: 'center center', transform: 'scale(1.02)' },
     videoFile: '/Data/15.mp4',
@@ -180,18 +180,18 @@ export const projectsData = [
       '/Data/109.mp4', '/Data/110.mp4', '/Data/111.mp4', '/Data/112.mp4'
     ],
     summary:
-      'TenGen Parkour is a standalone 3D high-speed movement platformer released on Itch.io developed over 8 months with ThroneLeaf Games. Led core controller mechanics and designed 7 linear obstacle gauntlets with an interactive lobby hub.',
-    subtext: 'Built with custom C# kinematic physics for seamless wall-runs, slide-hops, mantles, and momentum preservation.',
-    section1Title: 'MOMENTUM CONSERVATION & OBSTACLE GAUNTLETS',
-    section1Para: 'Jump distances and wall-run lengths scale dynamically with player acceleration curves, rewarding precision timing.',
+      'A standalone 3D high-speed platformer released on itch.io after eight months with ThroneLeaf Games. I led the controller mechanics and designed seven obstacle gauntlets plus a lobby hub.',
+    subtext: 'Custom C# kinematic physics for wall-runs, slide-hops, mantles and momentum carry.',
+    section1Title: 'Momentum & obstacle gauntlets',
+    section1Para: 'Jump distances and wall-run lengths scale with acceleration, so clean timing is rewarded.',
     highlights: [
-      'Custom C# kinematic physics controller calibrated for high-velocity wall-runs and mantles.',
-      '7 bespoke platforming obstacle courses built with escalating mechanical difficulty.',
-      'Central interactive hub designed with non-linear practice loops and secret training routes.',
-      'Shipped optimized PC beta on Itch.io with low draw-call overhead and smooth 60+ FPS frame pacing.'
+      'Custom C# kinematic controller tuned for high-speed wall-runs and mantles.',
+      'Seven courses with an escalating difficulty curve.',
+      'Hub level with looping practice routes and hidden training lines.',
+      'Released PC beta on itch.io, kept light on draw calls with steady frame pacing.'
     ],
-    section2Title: 'FLOW STATE OPTIMIZATION',
-    section2Para: 'Tuned obstacle spacing to musical rhythm patterns, eliminating dead stops and supporting infinite player flow.',
+    section2Title: 'Flow state',
+    section2Para: 'Obstacle spacing was tuned to a rhythm so the player never hits a dead stop.',
     itchUrl: 'https://theroneleaf-games.itch.io/tg-parkour'
   },
 
@@ -202,13 +202,13 @@ export const projectsData = [
     id: 'game-mechanics',
     category: 'GAME MECHANICS',
     title: 'Kinematic Gameplay Mechanics',
-    caseTitle: 'GAME MECHANICS : PHYSICS CONTROLLER & INTERACTION SYSTEMS',
+    caseTitle: 'Game Mechanics: Physics controller & traversal',
     subtitle: 'Unity C# Movement & Traversal System',
-    badge: 'SYSTEMS',
+    badge: 'Systems',
     engine: 'Unity C#',
     role: 'Gameplay Programmer & Designer',
     studio: 'ThroneLeaf Games',
-    duration: '8 MONTHS (2025 - 2026)',
+    duration: '8 months (2025 – 2026)',
     thumbnail: '/Data/10000.png',
     thumbStyle: { objectPosition: 'center center', transform: 'scale(1.0)' },
     videoFile: '/Data/101.mp4',
@@ -217,14 +217,14 @@ export const projectsData = [
       { file: '/Data/102.mp4', title: 'Slide Hop & Dynamic Friction Modulation' },
       { file: '/Data/103.mp4', title: 'Ledge Grab & Vertical Raycast Mantle' },
       { file: '/Data/104.mp4', title: 'Slope Acceleration & Air Strafing' },
-      { file: '/Data/105.mp4', title: 'Interactive Jump Pad Impulse Trajectory' },
-      { file: '/Data/106.mp4', title: 'Dynamic Camera Tilt on Wall Contact' },
-      { file: '/Data/107.mp4', title: 'Z-Axis Momentum Buffer & Buffered Jumps' },
-      { file: '/Data/108.mp4', title: 'Crouch Slide Under Low Clearance Hazards' },
-      { file: '/Data/109.mp4', title: 'Multi-Surface Footstep Audio & Impact Decals' },
-      { file: '/Data/110.mp4', title: 'Wall Clamber Angle Alignment Logic' },
-      { file: '/Data/111.mp4', title: 'Speed Pad Acceleration Multiplier System' },
-      { file: '/Data/112.mp4', title: 'Checkpoint Respawn & Momentum Nullification' },
+      { file: '/Data/105.mp4', title: 'Jump Pad Impulse Trajectory' },
+      { file: '/Data/106.mp4', title: 'Camera Tilt on Wall Contact' },
+      { file: '/Data/107.mp4', title: 'Momentum Buffer & Buffered Jumps' },
+      { file: '/Data/108.mp4', title: 'Crouch Slide Under Low Clearance' },
+      { file: '/Data/109.mp4', title: 'Footstep Audio & Impact Decals' },
+      { file: '/Data/110.mp4', title: 'Wall Clamber Angle Alignment' },
+      { file: '/Data/111.mp4', title: 'Speed Pad Acceleration Multiplier' },
+      { file: '/Data/112.mp4', title: 'Checkpoint Respawn & Momentum Reset' },
       { file: '/Data/800.mp4', title: '2D Action Traversal & Combat State Machine' }
     ],
     gallery: [
@@ -233,18 +233,18 @@ export const projectsData = [
       '/Data/1002.png'
     ],
     summary:
-      'A modular library of gameplay mechanics built in Unity C#, featuring precision kinematic character movement, wall-run angle snapping, slide momentum, and custom physics triggers.',
-    subtext: 'Engineered for responsive player input without reliance on erratic default PhysX rigidbody behavior.',
-    section1Title: 'CUSTOM KINEMATIC CONTROLLER ARCHITECTURE',
-    section1Para: 'Utilizes multi-raycast surface detection to calculate normal reflection angles for predictive slope sliding and wall cling physics.',
+      'A modular library of gameplay mechanics in Unity C#, covering precise kinematic movement, wall-run angle snapping, slide momentum and custom physics triggers.',
+    subtext: 'Built for responsive input instead of default rigidbody behaviour.',
+    section1Title: 'Kinematic controller architecture',
+    section1Para: 'Multi-raycast surface detection works out normal reflection for slope sliding and wall cling.',
     highlights: [
-      'Zero-jitter wall-running supporting convex and concave wall profiles.',
-      'Input buffering allowing responsive jump/mantle queues during aerial states.',
-      'Custom ground-check sphere-cast preventing snagging on metric stairs and ramps.',
-      'Complete state machine architecture separating walking, sprinting, airborne, and wall states.'
+      'Jitter-free wall-running on convex and concave walls.',
+      'Input buffering for jumps and mantles while airborne.',
+      'Sphere-cast ground check so the player doesn\'t snag on stairs and ramps.',
+      'State machine separating walk, sprint, air and wall states.'
     ],
-    section2Title: 'PERFORMANCE & RESPONSIVENESS',
-    section2Para: 'All kinematic calculations execute in FixedUpdate with interpolation enabled, guaranteeing fluid physics at any framerate.'
+    section2Title: 'Performance',
+    section2Para: 'Kinematic maths runs in FixedUpdate with interpolation, so it stays consistent at any frame rate.'
   },
 
   // ==========================================
@@ -254,13 +254,13 @@ export const projectsData = [
     id: '3d-models-collection',
     category: '3D MODELS',
     title: 'Hard-Surface 3D Asset Collection',
-    caseTitle: '3D MODELING & PROPS : HARD-SURFACE PIPELINE',
+    caseTitle: '3D Modelling: Hard-surface pipeline',
     subtitle: 'Blender SubD, Real-Time Game Assets & Product Viz',
-    badge: '3D SHOWCASE',
+    badge: '3D showcase',
     engine: 'Blender 3D',
     role: 'Hard-Surface 3D Modeler',
     studio: 'Asset Showcase',
-    duration: '2+ YEARS PRACTICE',
+    duration: '2+ years practice',
     thumbnail: '/Data/7.png',
     thumbStyle: { objectPosition: 'center center', transform: 'scale(1.0)' },
     videoFile: '/Data/11.mp4',
@@ -268,33 +268,33 @@ export const projectsData = [
       {
         name: 'Model 01: Combat Robot Foot & Mechanical Leg Assembly',
         images: ['/Data/69.png', '/Data/66.png', '/Data/64.png'],
-        desc: 'Hard-surface mechanical robot foot and joint articulation modeled with non-destructive booleans, clean bevel modifiers, and functional pivot clearance.'
+        desc: 'Mechanical robot foot and joint articulation, built with non-destructive booleans, clean bevels and clearance for the pivot.'
       },
       {
         name: 'Model 02: Ring Spaceship (Q-Ship)',
         images: ['/Data/61.png', '/Data/56.png', '/Data/5.jpg', '/Data/6.jpg', '/Data/54.png'],
-        desc: 'Intricate circular sci-fi spaceship featuring weighted normals, panelling detail, thruster housing, and high-to-low poly baking workflows.'
+        desc: 'Circular sci-fi ship with weighted normals, panel detail, thruster housing and a high-to-low bake.'
       },
       {
-        name: 'Model 03: 3D Product Perfume Bottle (Early Visualization Practice)',
+        name: 'Model 03: Product Perfume Bottle (early practice)',
         video: '/Data/11.mp4',
         images: ['/Data/10.png'],
-        desc: 'Product modeling and shader lookdev practice from early Blender training, focusing on glass transmission, metallic cap reflections, and studio lighting.'
+        desc: 'Product study from early Blender practice, focused on glass transmission, metal reflections and studio lighting.'
       },
       {
         name: 'Model 04: Sci-Fi Modular Tower & Environment Spire',
         images: ['/Data/7.png', '/Data/8.png', '/Data/9.png'],
-        desc: 'Stylized vertical sci-fi beacon tower designed for real-time game environments with modular geometry and high texel density.'
+        desc: 'Stylized sci-fi beacon tower for real-time environments, built from modular pieces.'
       },
       {
-        name: 'Model 05: Hand-Painted & Textured Sci-Fi Storage Box',
+        name: 'Model 05: Painted Sci-Fi Storage Box',
         images: ['/Data/2.png', '/Data/3.png'],
-        desc: 'Game-ready textured supply crate featuring painted graffiti aesthetics ("Help Me!"), edge wear weathering, and optimized low-poly budget.'
+        desc: 'Game-ready supply crate with painted graffiti ("Help Me!"), edge wear and a low-poly budget.'
       },
       {
-        name: 'Model 06: Robotic Sci-Fi Hard-Surface Crate / Box',
+        name: 'Model 06: Robotic Hard-Surface Crate',
         images: ['/Data/800000.png', '/Data/800011.png', '/Data/800012.png'],
-        desc: 'Hard-surface robotic sci-fi storage box featuring mechanical locking latches, reinforced bevel chamfers, and SubD topology optimized for modular props.'
+        desc: 'Robotic storage box with locking latches, reinforced chamfers and sub-d topology.'
       }
     ],
     gallery: [
@@ -304,19 +304,19 @@ export const projectsData = [
       '/Data/61.png', '/Data/56.png', '/Data/54.png'
     ],
     summary:
-      'A comprehensive collection of 6 distinct hard-surface assets created in Blender, encompassing mechanical robot joints, sci-fi ring spacecraft, product visualization studies, modular towers, robotic storage crates, and painted game props.',
-    subtext: 'Built utilizing MeshMachine, BoolTool, and weighted normal passes for clean real-time PBR shading.',
-    section1Title: 'TOPOLOGY & BAKING PIPELINE',
-    section1Para: 'Maintained strict quad-dominant flow during SubD phases, converting into clean triangulated low-poly game hulls without shading artifacts.',
+      'Six hard-surface assets built in Blender: mechanical robot joints, a sci-fi ring ship, product studies, modular towers, storage crates and painted props.',
+    subtext: 'Modelled with MeshMachine, BoolTool and weighted normals for clean PBR shading.',
+    section1Title: 'Topology & baking',
+    section1Para: 'Quad flow was kept strict through the sub-d phase, then converted to clean low-poly hulls without shading artefacts.',
     highlights: [
-      'SubD high-poly modeling with procedural chamfers and bevel modifiers.',
-      'Robotic crate engineered with modular mechanical latches and handles.',
-      'Weighted normal workflow eliminating the need for excessive supporting edge loops.',
-      'Clean UV unwrapping with >85% packing efficiency and mirrored symmetry optimizations.',
-      'Verified in Unity and Unreal Engine under varying dynamic lighting angles.'
+      'Sub-d modelling with procedural chamfers and bevels.',
+      'Crate built with modular latches and handles.',
+      'Weighted normals cut the need for extra support loops.',
+      'UVs packed efficiently with mirrored symmetry.',
+      'Checked in Unity and Unreal under changing light angles.'
     ],
-    section2Title: 'MODULAR ASSET ASSEMBLY',
-    section2Para: 'Standardized pivot points and grid snaps enable seamless modular kit assembly directly in-engine.'
+    section2Title: 'Modular assembly',
+    section2Para: 'Shared pivots and grid snaps let the kits go together in-engine.'
   },
 
   // ==========================================
@@ -326,13 +326,13 @@ export const projectsData = [
     id: 'game-ui-design',
     category: 'GAME UI',
     title: 'Game UI & HUD Systems',
-    caseTitle: 'GAME UI & INTERACTION DESIGN : DIEGETIC & HUD',
+    caseTitle: 'Game UI: HUD & interaction',
     subtitle: 'Tactical & Movement Interface Systems',
-    badge: 'UI DESIGN',
+    badge: 'UI design',
     engine: 'Unity Canvas / Krita',
     role: 'UI Designer & Scripter',
     studio: 'Interface Systems',
-    duration: '2025 - 2026',
+    duration: '2025 – 2026',
     thumbnail: '/Data/700.png',
     thumbStyle: { objectPosition: 'center center', transform: 'scale(1.0)' },
     gallery: [
@@ -342,18 +342,18 @@ export const projectsData = [
       '/Data/703.png'
     ],
     summary:
-      'In-game user interfaces, pause menus, mission briefings, and HUD elements designed for tactical FPS and high-speed platformers.',
-    subtext: 'Designed for high contrast, scalable canvas anchoring, and fast cognitive readability under intense combat conditions.',
-    section1Title: 'VISUAL HIERARCHY & SCREEN READABILITY',
-    section1Para: 'HUD elements are positioned along peripheral anchoring zones to maximize gameplay visibility without obstructing targeting sightlines.',
+      'In-game HUDs, pause menus, mission briefings and interface elements for tactical FPS and high-speed platformer projects.',
+    subtext: 'Built for high contrast, scalable anchors and fast reading under pressure.',
+    section1Title: 'Hierarchy & readability',
+    section1Para: 'HUD elements sit on the screen edges so the centre stays clear.',
     highlights: [
-      'Clean layout compositions captured in screens 700, 701, 702, and 703.',
-      'Sleek cyberpunk dark-glass aesthetic with purple (#8a1df4) accent styling.',
-      'Anchored layouts accommodating 16:9, 16:10, and ultrawide 21:9 monitors without aspect distortion.',
-      'Interactive button hover states, sound cues, and gamepad navigation triggers.'
+      'Layouts shown in screens 700 to 703.',
+      'Dark glass look with a purple (#8a1df4) accent.',
+      'Anchors that hold 16:9, 16:10 and 21:9 without distortion.',
+      'Hover states, sound cues and gamepad navigation.'
     ],
-    section2Title: 'MICRO-INTERACTIONS & USER EXPERIENCE',
-    section2Para: 'Implemented fluid panel fade and slider transitions for consistent audio and settings adjustments.'
+    section2Title: 'Micro-interactions',
+    section2Para: 'Panel fades and slider transitions keep settings changes smooth.'
   }
 ];
 

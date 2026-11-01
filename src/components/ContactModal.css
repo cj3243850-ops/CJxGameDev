@@ -1,0 +1,368 @@
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Modal Backdrop */
+.contact-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(4, 5, 8, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 1000005;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+/* Dual Column Card Container */
+.contact-modal-dual-card {
+  width: 100%;
+  max-width: 980px;
+  max-height: 90vh;
+  background: rgba(243, 241, 236, 0.94);
+  backdrop-filter: blur(34px) saturate(160%);
+  -webkit-backdrop-filter: blur(34px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 4px;
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.75);
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  animation: dualPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dualPopIn {
+  from {
+    transform: scale(0.97) translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 860px) {
+  .contact-modal-dual-card {
+    grid-template-columns: 1fr;
+    max-height: 94vh;
+  }
+}
+
+/* =========================================================
+   LEFT TELEMETRY PANE
+   ========================================================= */
+.contact-left-telemetry {
+  background: #090a0f;
+  color: #ffffff;
+  padding: 38px 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.telemetry-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2.5px;
+  color: #8e95a5;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.telemetry-headline {
+  font-family: 'Teko', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 1.5px;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.telemetry-lead {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #9ca3af;
+  margin-bottom: 24px;
+}
+
+.telemetry-credentials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 20px;
+}
+
+.cred-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.cred-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.64rem;
+  letter-spacing: 2px;
+  color: #6b7280;
+  margin-bottom: 3px;
+}
+
+.cred-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.cred-val.highlight-mail {
+  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.86rem;
+  word-break: break-all;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.3);
+  padding-bottom: 2px;
+}
+
+.cred-val.highlight-mail:hover {
+  border-bottom-color: #ffffff;
+}
+
+.cred-links-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.cred-pill-link {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.cred-pill-link:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+.telemetry-bottom-strip {
+  display: flex;
+  gap: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: #4b5563;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 18px;
+  margin-top: 24px;
+}
+
+/* =========================================================
+   RIGHT INTERACTIVE FORM PANE
+   ========================================================= */
+.contact-right-form-pane {
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #111318;
+}
+
+.form-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(17, 19, 24, 0.1);
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.form-sub-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2.5px;
+  color: #5c6270;
+  display: block;
+}
+
+.form-title {
+  font-family: 'Teko', sans-serif;
+  font-size: 2.3rem;
+  letter-spacing: 1.5px;
+  color: #111318;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.contact-close-btn {
+  background: rgba(17, 19, 24, 0.08);
+  border: 1px solid rgba(17, 19, 24, 0.15);
+  color: #111318;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.contact-close-btn:hover {
+  background: #111318;
+  color: #ffffff;
+}
+
+/* Form Styles */
+.contact-interactive-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-split-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 580px) {
+  .form-split-row { grid-template-columns: 1fr; }
+}
+
+.form-input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-input-field label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 1.5px;
+  color: #4b5563;
+  font-weight: 700;
+}
+
+.form-input-field input,
+.form-input-field select,
+.form-input-field textarea {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(17, 19, 24, 0.15);
+  border-radius: 3px;
+  padding: 10px 12px;
+  color: #111318;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.86rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-input-field input:focus,
+.form-input-field select:focus,
+.form-input-field textarea:focus {
+  border-color: #111318;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.form-input-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-err-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: #dc2626;
+}
+
+.form-action-dock {
+  margin-top: 6px;
+}
+
+.contact-submit-btn {
+  width: 100%;
+  background: #111318;
+  color: #ffffff;
+  border: 1px solid #111318;
+  padding: 13px 20px;
+  border-radius: 50px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+.contact-submit-btn:hover:not(:disabled) {
+  background: #ffffff;
+  color: #111318;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+}
+
+.contact-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Success State */
+.form-success-state {
+  padding: 40px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-pulse-ring {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #111318;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.form-success-state h4 {
+  font-family: 'Teko', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 1.5px;
+  color: #111318;
+  line-height: 1;
+}
+
+.form-success-state p {
+  font-size: 0.88rem;
+  color: #4b5563;
+  margin-top: 8px;
+  max-width: 400px;
+  line-height: 1.55;
+}

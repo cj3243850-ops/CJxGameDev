@@ -1,109 +1,158 @@
-@import url('https://fonts.googleapis.com/css2?family=Teko:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-.splash-overlay {
+.splash-screen-root {
   position: fixed;
   inset: 0;
-  background-color: #0d0f12;
+  width: 100vw;
+  height: 100vh;
+  background: #040508;
+  z-index: 9999999;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99999;
-  opacity: 1;
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  pointer-events: all;
+  user-select: none;
+  cursor: wait;
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.65s ease;
+  will-change: opacity;
 }
 
-.splash-overlay.fade-out {
+.splash-screen-root.fade-out {
   opacity: 0;
-  transform: scale(1.02);
+  visibility: hidden;
   pointer-events: none;
 }
 
-.splash-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  user-select: none;
+/* Background Subtle Grid Scan */
+.splash-grid-background {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.8;
+  animation: splashPulse 3s infinite ease-in-out;
 }
 
-/* Splash Logo Clean & Crisp (No Heavy Blur) */
-.splash-logo {
-  width: 170px;
-  height: auto;
+@keyframes splashPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+/* Center Terminal Container */
+.splash-center-terminal {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 540px;
+  padding: 0 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Brand Wordmark */
+.splash-brand-block {
+  margin-bottom: 24px;
+}
+
+.splash-brand-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #ffffff;
+  line-height: 1;
+  display: block;
+}
+
+.splash-brand-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 2.5px;
+  color: #8e95a5;
+  margin-top: 6px;
+  display: block;
+}
+
+/* Telemetry Display (Number + Bar) */
+.splash-telemetry-display {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.splash-counter-huge {
+  font-family: 'Teko', sans-serif;
+  font-size: 6.8rem;
+  line-height: 0.85;
+  letter-spacing: 2px;
+  color: #ffffff;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
   margin-bottom: 12px;
 }
 
-.splash-title-box {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  line-height: 0.92;
+.counter-unit {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.2rem;
+  color: #8e95a5;
+  font-weight: 500;
 }
 
-.splash-title-white {
-  font-family: 'Teko', sans-serif;
-  font-size: 4.5rem;
-  letter-spacing: 3.5px;
-  font-weight: 700;
-  color: #ffffff;
+.splash-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 14px;
 }
 
-.splash-title-accent {
-  font-family: 'Teko', sans-serif;
-  font-size: 4.5rem;
-  letter-spacing: 3.5px;
-  font-weight: 700;
-  color: #8a1df4;
-  margin-left: 5px;
+.splash-progress-bar {
+  height: 100%;
+  background: #ffffff;
+  transition: width 0.25s ease-out;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
 }
 
-.splash-subtitle {
-  font-family: 'Teko', sans-serif;
-  font-size: 1.6rem;
-  letter-spacing: 6px;
-  color: #8b929e;
-  font-weight: 600;
-  margin-top: 4px;
-  text-transform: uppercase;
-}
-
-/* 3 Clean Equalizer Bars (No Neon Shadow) */
-.splash-loading-bars {
+.splash-status-line {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 28px;
-  height: 24px;
+  gap: 10px;
 }
 
-.splash-loading-bars .bar {
+.status-blip {
   width: 6px;
-  height: 22px;
-  background-color: #8a1df4;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff;
+  animation: blipGlow 1.2s infinite ease-in-out;
+}
+
+@keyframes blipGlow {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.status-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  color: #8e95a5;
+}
+
+/* MUSA / BMW Tri-Color Accent Line */
+.splash-accent-strip {
+  display: flex;
+  height: 2.5px;
+  margin-top: 28px;
   border-radius: 2px;
-  animation: barSmoothPulse 1s infinite ease-in-out;
+  overflow: hidden;
 }
 
-.splash-loading-bars .bar-1 {
-  animation-delay: 0s;
-}
-
-.splash-loading-bars .bar-2 {
-  animation-delay: 0.18s;
-}
-
-.splash-loading-bars .bar-3 {
-  animation-delay: 0.36s;
-}
-
-@keyframes barSmoothPulse {
-  0%, 100% {
-    transform: scaleY(0.35);
-    opacity: 0.35;
-  }
-  50% {
-    transform: scaleY(1.1);
-    opacity: 1;
-  }
-}
+.accent-seg.blue { width: 45px; background: #0066b1; }
+.accent-seg.navy { width: 35px; background: #002b49; }
+.accent-seg.red  { width: 25px; background: #e21a1a; }
