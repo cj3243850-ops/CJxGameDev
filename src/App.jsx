@@ -6,7 +6,7 @@ import Mid from './components/Mid';
 import Footer from './components/Footer';
 import ProjectDetail from './components/ProjectDetail';
 import ContactModal from './components/ContactModal';
-import SplashScreen from './components/SplashScreen';
+import CyberGridFallback from './components/CyberGridFallback';
 import { initVisitorTracker } from './utils/visitorTracker';
 
 export default function App() {
@@ -15,13 +15,12 @@ export default function App() {
   const backdropLayerRef = useRef(null);
   const lenisRef = useRef(null);
 
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
   const [modalSubject, setModalSubject] = useState('');
-  const [videoBlobUrl, setVideoBlobUrl] = useState(null);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
-  // 1. Fluid Responsive Viewport Meta
+  // 1. Responsive Viewport Meta Tag
   useEffect(() => {
     let metaTag = document.querySelector('meta[name="viewport"]');
     if (!metaTag) {
@@ -32,9 +31,41 @@ export default function App() {
     metaTag.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0');
   }, []);
 
-  // 2. Silent Analytics Tracker
+  // 2. Analytics Tracker
   useEffect(() => {
     initVisitorTracker();
+  }, []);
+
+  // 3. Background 100% Video Blob Fetcher (Zero Freeze/Lag)
+  useEffect(() => {
+    let isCancelled = false;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '/Data/background_scroll.mp4', true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = () => {
+      if (xhr.status === 200 && !isCancelled) {
+        const blobUrl = URL.createObjectURL(xhr.response);
+        if (videoRef.current) {
+          videoRef.current.src = blobUrl;
+          videoRef.current.load();
+          videoRef.current.oncanplaythrough = () => {
+            if (!isCancelled) {
+              videoRef.current.pause();
+              videoRef.current.currentTime = 0.001;
+              setIsVideoReady(true);
+            }
+          };
+        }
+      }
+    };
+
+    xhr.send();
+
+    return () => {
+      isCancelled = true;
+      xhr.abort();
+    };
   }, []);
 
   const handleOpenContact = (subjectText = '') => {
@@ -42,16 +73,16 @@ export default function App() {
     setIsHireModalOpen(true);
   };
 
-  // 3. Lenis Scroll Freeze jab modal ya splash screen active ho
+  // 4. Modal Scroll Freeze
   useEffect(() => {
-    if (isLoading || selectedProject || isHireModalOpen) {
+    if (selectedProject || isHireModalOpen) {
       if (lenisRef.current) lenisRef.current.stop();
     } else {
       if (lenisRef.current) lenisRef.current.start();
     }
-  }, [isLoading, selectedProject, isHireModalOpen]);
+  }, [selectedProject, isHireModalOpen]);
 
-  // 4. Smooth Lenis Engine & Hardware-Accelerated Video Scrubbing
+  // 5. Smooth Lenis Engine & Scrubbing
   useEffect(() => {
     const isMobile = window.innerWidth <= 768;
 
@@ -80,40 +111,20 @@ export default function App() {
       }
     });
 
-    if (video) {
-      video.pause();
-      video.currentTime = 0.001;
-    }
-
-    const revealElements = document.querySelectorAll('.reveal-on-scroll');
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-inview');
-          } else {
-            entry.target.classList.remove('is-inview');
-          }
-        });
-      },
-      { threshold: 0.08, rootMargin: '0px 0px -5% 0px' }
-    );
-    revealElements.forEach((el) => observer.observe(el));
-
     let rafId = null;
 
     const animateLoop = (time) => {
       lenis.raf(time);
 
-      // Smooth kinematic interpolation (Lerp)
+      // Kinematic Lerp interpolation
       const delta = targetProgress - renderedProgress;
       if (Math.abs(delta) < 0.0001) {
         renderedProgress = targetProgress;
       } else {
-        renderedProgress += delta * 0.075;
+        renderedProgress += delta * 0.08;
       }
 
-      // Buttery smooth frame scrubbing
+      // Smooth Video Scrubbing (Active only when blob ready)
       if (video && video.readyState >= 2 && video.duration) {
         const totalDuration = video.duration;
         const calculatedTime = renderedProgress * (totalDuration - 0.03);
@@ -124,7 +135,7 @@ export default function App() {
         }
       }
 
-      // Dynamic Depth / Camera zoom
+      // Parallax Depth
       if (stageLayer) {
         const subtleZoom = 1.01 + renderedProgress * 0.025;
         stageLayer.style.transform = `scale(${subtleZoom.toFixed(4)}) translateZ(0)`;
@@ -141,32 +152,30 @@ export default function App() {
     rafId = requestAnimationFrame(animateLoop);
 
     return () => {
-      observer.disconnect();
       cancelAnimationFrame(rafId);
       lenis.destroy();
     };
-  }, [videoBlobUrl]);
+  }, []);
 
   return (
     <div className="portfolio-cinematic-root">
-      {/* Splash Screen Preloader: Video blob ready hone tak page lock rakhega */}
-      {isLoading && (
-        <SplashScreen
-          videoRef={videoRef}
-          onVideoReady={(blobUrl) => setVideoBlobUrl(blobUrl)}
-          onLoaded={() => setIsLoading(false)}
-        />
-      )}
-
-      {/* Persistent 3D Canvas Layer */}
+      {/* Background Stage: Canvas to Video Smooth Crossfade */}
       <div className="layer-persistent-stage" aria-hidden="true">
+        <CyberGridFallback isVideoReady={isVideoReady} />
+
         <div className="layer-studio-backdrop" ref={backdropLayerRef} />
 
-        <div className="layer-3d-viewport" ref={stageLayerRef}>
+        <div
+          className="layer-3d-viewport"
+          ref={stageLayerRef}
+          style={{
+            opacity: isVideoReady ? 1 : 0,
+            transition: 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
+        >
           <video
             ref={videoRef}
             className="persistent-stage-video"
-            src={videoBlobUrl || "/Data/background_scroll.mp4"}
             muted
             playsInline
             preload="auto"
